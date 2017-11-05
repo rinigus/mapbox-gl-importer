@@ -1,13 +1,16 @@
 # Definition of Mapbox GL layers
 
 defaults:
-  srs: +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs
+  #srs: +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs
+  #extent: -20037508.34 -20037508.34 20037508.34 20037508.34
+  srs: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over
   file: data/europe-estonia.sqlite
   key_field: rowid
   type: sqlite
   use_spatial_index: "true"
   zmin: 0
   zmax: 20
+  buffer-size: 4
 
 parameters:
   attribution: Data (c) OpenStreetMap (and) contributors, ODbL
@@ -15,8 +18,8 @@ parameters:
   center: 0,20,4
   format: pbf
   maxzoom: 20
-  minzoom: 0  
-  
+  minzoom: 0
+
 layers:
   - id: land
     extent: -20037508.34 -20037508.34 20037508.34 20037508.34
@@ -32,13 +35,54 @@ layers:
     type: shape
     zmin: 10
 
-  - id: landuse
-    zmin: 4
-    table: |
-      SELECT rowid, geometry, type
-      FROM osm_landusages
-      ORDER BY area DESC
-      {% if z == 10 %}
-      {% else %}
-      {% endif %}
+#########################################
 
+  - id: aeroway
+    table: SELECT rowid, geometry, class FROM osm_aeroways
+    zmin: 11
+
+  - id: airport
+    table: |
+      SELECT rowid, geometry, name, name_en, iata FROM osm_airports
+      {% if z <= 11 %}
+      WHERE iata IS NOT NULL
+      {% endif %}
+    zmin: 6
+
+  - id: boundary
+    table: SELECT rowid, geometry, admin_level, disputed, maritime FROM osm_boundaries
+    zmin: 2
+
+  - id: building
+    table: SELECT rowid, geometry FROM osm_buildings
+    zmin: 14
+
+  - id: housename
+    table: SELECT rowid, geometry, name, name_en FROM osm_housenames
+    zmin: 14
+
+  - id: housenumber
+    table: SELECT rowid, geometry, housenumber FROM osm_housenumbers
+    zmin: 14
+
+  - id: landcover
+    table: |
+      SELECT rowid, geometry, class, subclass FROM
+      {% if z <= 14 %}
+      osm_landcovers_zZLEVEL
+      {% else %}
+      osm_landcovers
+      {% endif %}
+      ORDER BY area DESC
+    zmin: 5
+
+  - id: landuse
+    table: |
+      SELECT rowid, geometry, class FROM
+      {% if z <= 14 %}
+      osm_landusages_zZLEVEL
+      {% else %}
+      osm_landusages
+      {% endif %}
+      ORDER BY area DESC
+    zmin: 7
