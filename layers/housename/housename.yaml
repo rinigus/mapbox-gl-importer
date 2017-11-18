@@ -1,0 +1,10 @@
+layers:
+  - id: housename
+    table: |
+      SELECT geometry, housename
+      FROM osm_housename_point
+      WHERE geometry && !bbox!
+    zmin: 14
+
+schema:
+  - update.sql

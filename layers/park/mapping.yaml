@@ -1,0 +1,32 @@
+auto_generalized_tables:
+  park_polygon:
+    zmin: 8
+    zmax: 13
+    area_filter: true
+
+tables:
+  park_polygon:
+    type: polygon
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: validated_geometry
+    - name: landuse
+      key: landuse
+      type: string
+    - name: leisure
+      key: leisure
+      type: string
+    - name: boundary
+      key: boundary
+      type: string
+    - name: area
+      type: area
+    - name: webmerc_area
+      type: webmerc_area
+    mapping:
+      leisure:
+      - nature_reserve
+      boundary:
+      - national_park

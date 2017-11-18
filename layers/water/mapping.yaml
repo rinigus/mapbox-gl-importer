@@ -1,0 +1,52 @@
+auto_generalized_tables:
+  water_polygon:
+    zmin: 4
+    zmax: 13
+    area_filter: true
+
+tables:
+  water_polygon:
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: validated_geometry
+    - name: area
+      type: area
+    - name: webmerc_area
+      type: webmerc_area
+    - key: name
+      name: name
+      type: string
+    - name: name_en
+      key: name:en
+      type: string
+    - name: natural
+      key: natural
+      type: string
+    - name: landuse
+      key: landuse
+      type: string
+    - name: water
+      key: water
+      type: string
+    - name: waterway
+      key: waterway
+      type: string
+    filters:
+      reject:
+        covered: ["yes"]
+    mapping:
+      landuse:
+      - reservoir
+      natural:
+      - water
+      - bay
+      waterway:
+      - river
+      - riverbank
+      - stream
+      - canal
+      - drain
+      - ditch
+    type: polygon

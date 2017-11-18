@@ -1,0 +1,57 @@
+auto_generalized_tables:
+  aeroway_polygon:
+    zmin: 10
+    zmax: 13
+    area_filter: true
+
+  aeroway_linestring:
+    zmin: 10
+    zmax: 13
+
+ref_field: &ref
+  key: ref
+  name: ref
+  type: string
+
+def_aeroway_polygon_mapping: &aeroway_polygon_mapping
+  - aerodrome
+  - heliport
+  - runway
+  - helipad
+  - taxiway
+  - apron
+
+tables:
+  aeroway_polygon:
+    type: polygon
+    fields:
+    - *ref
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: aeroway
+      type: mapping_value
+    - name: area
+      type: area
+    - name: webmerc_area
+      type: webmerc_area
+    mapping:
+      aeroway: *aeroway_polygon_mapping
+      "area:aeroway": *aeroway_polygon_mapping
+
+  aeroway_linestring:
+    type: linestring
+    fields:
+    - *ref
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: aeroway
+      key: aeroway
+      type: string
+    mapping:
+      aeroway:
+      - runway
+      - taxiway

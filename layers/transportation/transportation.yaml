@@ -1,0 +1,11 @@
+layers:
+  - id: transportation
+    table: |
+      SELECT geometry, class, subclass, oneway, ramp, brunnel, service FROM layer_transportation(!bbox!, z(!scale_denominator!))
+    geometry_field: geometry
+    zmin: 4
+
+schema:
+  - ./class.sql
+  - ./update_transportation_merge.sql
+  - ./layer.sql

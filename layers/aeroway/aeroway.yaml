@@ -1,0 +1,19 @@
+layers:
+  - id: aeroway
+    table: |
+      SELECT geometry, aeroway AS class, ref FROM
+      {% if z <= 13 %}
+      osm_aeroway_polygon_zZLEVEL
+      {% else %}
+      osm_aeroway_polygon
+      {% endif %}
+      WHERE geometry && !bbox!
+      UNION ALL
+      SELECT geometry, aeroway AS class, ref FROM
+      {% if z <= 13 %}
+      osm_aeroway_linestring_zZLEVEL
+      {% else %}
+      osm_aeroway_linestring
+      {% endif %}
+      WHERE geometry && !bbox!
+    zmin: 10

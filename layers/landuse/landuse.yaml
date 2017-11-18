@@ -1,0 +1,18 @@
+layers:
+  - id: landuse
+    table: |
+      SELECT geometry,
+      COALESCE(
+        NULLIF(landuse, ''),
+        NULLIF(amenity, ''),
+        NULLIF(leisure, '')
+      ) AS class
+      FROM
+      {% if z <= 13 %}
+      osm_landuse_polygon_zZLEVEL
+      {% else %}
+      osm_landuse_polygon
+      {% endif %}
+      WHERE geometry && !bbox!
+      ORDER BY area DESC
+    zmin: 7

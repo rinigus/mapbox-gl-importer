@@ -1,0 +1,13 @@
+layers:
+  - id: park
+    table: |
+      SELECT geometry, COALESCE(NULLIF(leisure, ''), NULLIF(boundary, '')) AS class
+      FROM
+      {% if z <= 13 %}
+      osm_park_polygon_zZLEVEL
+      {% else %}
+      osm_park_polygon
+      {% endif %}
+      WHERE geometry && !bbox!
+      ORDER BY area DESC
+    zmin: 8

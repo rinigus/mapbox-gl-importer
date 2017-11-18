@@ -1,0 +1,36 @@
+layers:
+  - id: water
+    table: |
+      SELECT geometry, 'ocean'::text AS class FROM
+      {% if z <= 9 %}
+      osm_ocean_simplified_polygon
+      {% endif %}
+      WHERE geometry && !bbox!
+      {% if z >= 4 %}
+      UNION ALL
+      SELECT geometry, 'lake'::text AS class FROM
+      osm_water_polygon_zZLEVEL
+      WHERE geometry && !bbox!
+      {% endif %}
+    zmin: 0
+    zmax: 9
+
+  - id: water
+    table: |
+      SELECT geometry, 'ocean'::text AS class FROM
+      {% if z <= 12 %}
+      osm_ocean_polygon_zZLEVEL
+      {% else %}
+      osm_ocean_polygon
+      {% endif %}
+      WHERE geometry && !bbox!
+      UNION ALL
+      SELECT geometry, CASE WHEN waterway='' AND water<>'river' THEN 'lake' ELSE 'river' END AS class FROM
+      {% if z <= 12 %}
+      osm_water_polygon_zZLEVEL
+      {% else %}
+      osm_water_polygon
+      {% endif %}
+      WHERE geometry && !bbox!
+    zmin: 10
+    zmax: 14

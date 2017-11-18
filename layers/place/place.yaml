@@ -1,0 +1,18 @@
+layers:
+  - id: place
+    table: |
+      SELECT geometry, name, COALESCE(NULLIF(name_en, ''), name) AS name_en, class, rank, capital FROM
+      layer_place(!bbox!, z(!scale_denominator!), !pixel_width!)
+    geometry_field: geometry
+    buffer_size: 256
+    zmin: 0
+
+schema:
+  - ./types.sql
+  - ./capital.sql
+  - ./city.sql
+  - ./island_rank.sql
+  - ./layer.sql
+  - ./update_country_point.sql
+  - ./update_island_point.sql
+  - ./update_state_point.sql

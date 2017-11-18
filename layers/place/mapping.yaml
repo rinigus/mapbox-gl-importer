@@ -1,0 +1,148 @@
+name_field: &name
+  name: name
+  key: name
+  type: string
+name_en_field: &name_en
+  name: name_en
+  key: name:en
+  type: string
+rank_field: &rank
+  name: rank
+  key: rank
+  type: integer
+
+tables:
+  continent_point:
+    type: point
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - *name
+    - *name_en
+    filters:
+      require:
+        name: ["__any__"]
+    mapping:
+      place:
+      - continent
+
+  country_point:
+    type: point
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - *name
+    - *name_en
+    - *rank
+    filters:
+      require:
+        name: ["__any__"]
+    mapping:
+      place:
+      - country
+
+  island_polygon:
+    type: polygon
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: area
+      type: area
+    - name: webmerc_area
+      type: webmerc_area
+    - *name
+    - *name_en
+    - *rank
+    filters:
+      require:
+        name: ["__any__"]
+    mapping:
+      place:
+      - island
+
+  island_point:
+    type: geometry
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - *name
+    - *name_en
+    - *rank
+    filters:
+      require:
+        name: ["__any__"]
+    type_mappings:
+      points:
+        place:
+          - island
+      polygons:
+        place:
+          - island
+
+  state_point:
+    type: point
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - *name
+    - *name_en
+    - name: is_in_country
+      key: is_in:country
+      type: string
+    - name: is_in_country_code
+      key: is_in:country_code
+      type: string
+    - name: ref
+      key: ref
+      type: string
+    - *rank
+    filters:
+      require:
+        name: ["__any__"]
+    mapping:
+      place:
+      - state
+
+  city_point:
+    type: point
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - *name
+    - *name_en
+    - name: tags
+      type: hstore_tags
+    - name: place
+      key: place
+      type: string
+    - key: population
+      name: population
+      type: integer
+    - key: capital
+      name: capital
+      type: string
+    - *rank
+    filters:
+      require:
+        name: ["__any__"]
+    mapping:
+      place:
+      - city
+      - town
+      - village
+      - hamlet
+      - suburb
+      - neighbourhood
+      - isolated_dwelling

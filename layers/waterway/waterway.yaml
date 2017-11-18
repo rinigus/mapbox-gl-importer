@@ -1,0 +1,27 @@
+layers:
+  - id: waterway
+    table: |
+      SELECT geometry, name, COALESCE(NULLIF(name_en, ''), name) AS name_en, waterway AS class FROM
+      osm_waterway_river_linestring_zZLEVEL
+      WHERE geometry && !bbox!
+    zmin: 4
+    zmax: 12
+
+  - id: waterway
+    table: |
+      SELECT geometry, name, COALESCE(NULLIF(name_en, ''), name) AS name_en, waterway AS class FROM
+      {% if z <= 13 %}
+      osm_waterway_river_linestring_zZLEVEL
+      {% else %}
+      osm_waterway_river_linestring
+      {% endif %}
+      WHERE geometry && !bbox!
+      UNION ALL
+      SELECT geometry, name, name_en, waterway AS class FROM
+      {% if z <= 13 %}
+      osm_waterway_linestring_zZLEVEL
+      {% else %}
+      osm_waterway_linestring
+      {% endif %}
+      WHERE geometry && !bbox!
+    zmin: 13

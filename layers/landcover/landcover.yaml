@@ -1,0 +1,15 @@
+layers:
+  - id: landcover
+    table: |
+      SELECT geometry, class, subclass FROM
+      {% if z <= 13 %}
+      osm_landcover_processed_polygon_zZLEVEL
+      {% else %}
+      osm_landcover_processed_polygon
+      {% endif %}
+      WHERE geometry && !bbox!
+      ORDER BY area DESC
+    zmin: 7
+
+schema:
+  - update.sql

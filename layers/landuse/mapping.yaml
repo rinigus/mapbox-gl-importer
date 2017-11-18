@@ -1,0 +1,48 @@
+auto_generalized_tables:
+  landuse_polygon:
+    zmin: 7
+    zmax: 13
+    area_filter: true
+
+tables:
+  landuse_polygon:
+    type: polygon
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: validated_geometry
+    - name: landuse
+      key: landuse
+      type: string
+    - name: amenity
+      key: amenity
+      type: string
+    - name: leisure
+      key: leisure
+      type: string
+    - name: area
+      type: area
+    - name: webmerc_area
+      type: webmerc_area
+    mapping:
+      amenity:
+      - school
+      - university
+      - kindergarten
+      - college
+      - library
+      - hospital
+      landuse:
+      - railway
+      - cemetery
+      - military
+      # zoning
+      - residential
+      - commercial
+      - industrial
+      - retail
+      leisure:
+      - stadium
+      - pitch
+      - playground

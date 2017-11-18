@@ -1,0 +1,19 @@
+# List of layers used for generation of mappings (imposm) and layers in vector tile
+
+- aerodrome_label
+- aeroway
+- boundary
+- building
+- housename
+- housenumber
+- landcover
+- landuse
+- mountain_peak
+- park
+- place
+- poi
+- transportation
+- transportation_name
+- water
+- water_name
+- waterway
