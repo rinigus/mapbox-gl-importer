@@ -65,7 +65,7 @@ Vector tiles layers are defined using YAML configuration files that are scriptab
 
 There are two ways to generate vector tiles: using bash script or GNU make. The bash script allows to specify the additional parameters that will be passed to `tilelive-copy` as arguments. For example, bounding box and zoom levels could be specified allowing to generate vector tiles for specified coordinates into a single MBTiles file. GNU Makefile approach would generate vector tiles covering the planet by splitting the task into small sub-tasks. As a result, one can run several imports in parallel (`-j` option for `make`), stop the import and continue later with some loss of imported data due to interrupted jobs. It is suggested to use bash script for testing and make in production cases.
 
-The information regarding bash script path and make example are listed at the end of ``./generate_vector_source.py` run (this script is executed as a part of `prepare_vector_source.sh`). While import using make is shown with the full command, for bash script only the path of the script is printed. An example usage for importing using the bash script:
+The information regarding bash script path and make example are listed at the end of `./generate_vector_source.py` run (this script is executed as a part of `prepare_vector_source.sh`). While import using make is shown with the full command, for bash script only the path of the script is printed. An example usage for importing using the bash script:
 
 ```
 bash build/layers/layers.xml-importer.sh --bounds="21,57,29,60" mbtiles://./tiles/world.mbtiles
