@@ -10,6 +10,15 @@ rank_field: &rank
   name: rank
   key: rank
   type: integer
+population_field: &population
+  key: population
+  name: population
+  type: integer
+z_order_field: &z_order
+  key: z_order
+  name: z_order
+  type: integer
+
 
 tables:
   continent_point:
@@ -37,7 +46,7 @@ tables:
       type: geometry
     - *name
     - *name_en
-    - *rank
+    - *population
     filters:
       require:
         name: ["__any__"]
@@ -67,7 +76,7 @@ tables:
       - island
 
   island_point:
-    type: geometry
+    type: point
     fields:
     - name: osm_id
       type: id
@@ -79,13 +88,9 @@ tables:
     filters:
       require:
         name: ["__any__"]
-    type_mappings:
-      points:
-        place:
-          - island
-      polygons:
-        place:
-          - island
+    mapping:
+      place:
+      - island
 
   state_point:
     type: point
@@ -96,22 +101,42 @@ tables:
       type: geometry
     - *name
     - *name_en
+    - *population
     - name: is_in_country
       key: is_in:country
       type: string
     - name: is_in_country_code
       key: is_in:country_code
       type: string
-    - name: ref
-      key: ref
-      type: string
-    - *rank
     filters:
       require:
         name: ["__any__"]
     mapping:
       place:
       - state
+
+  capital_point:
+    type: point
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - *name
+    - *name_en
+    - *population
+    - key: capital
+      name: capital
+      type: string
+    filters:
+      require:
+        name: ["__any__"]
+        capital: ["2", "yes"]
+    mapping:
+      place:
+      - city
+      - town
+      - village
 
   city_point:
     type: point
@@ -122,27 +147,106 @@ tables:
       type: geometry
     - *name
     - *name_en
-    - name: tags
-      type: hstore_tags
+    - *population
+    - *z_order
     - name: place
       key: place
       type: string
-    - key: population
-      name: population
-      type: integer
-    - key: capital
-      name: capital
+    filters:
+      require:
+        name: ["__any__"]
+      reject:
+        capital: ["2", "yes"]
+    mapping:
+      place:
+      - region
+      - county
+      - city
+
+  town_point:
+    type: point
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - *name
+    - *name_en
+    - *population
+    filters:
+      require:
+        name: ["__any__"]
+      reject:
+        capital: ["2", "yes"]
+    mapping:
+      place:
+      - town
+
+  village_point:
+    type: point
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - *name
+    - *name_en
+    filters:
+      require:
+        name: ["__any__"]
+      reject:
+        capital: ["2", "yes"]
+    mapping:
+      place:
+      - village
+
+  place_other_point:
+    type: point
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - *name
+    - *name_en
+    - *z_order
+    - name: place
+      key: place
       type: string
-    - *rank
     filters:
       require:
         name: ["__any__"]
     mapping:
       place:
-      - city
-      - town
-      - village
-      - hamlet
-      - suburb
-      - neighbourhood
-      - isolated_dwelling
+        - hamlet
+        - suburb
+        - neighbourhood
+        - isolated_dwelling
+
+  # city_point:
+  #   type: point
+  #   fields:
+  #   - name: osm_id
+  #     type: id
+  #   - name: geometry
+  #     type: geometry
+  #   - *name
+  #   - *name_en
+  #   - *population
+  #   - name: place
+  #     key: place
+  #     type: string
+  #   filters:
+  #     require:
+  #       name: ["__any__"]
+  #     reject:
+  #       capital: ["2", "yes"]
+  #   mapping:
+  #     place:
+  #     - city
+  #     - town
+  #     - village
+  #     - hamlet
+  #     - suburb
+  #     - neighbourhood
+  #     - isolated_dwelling
