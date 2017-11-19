@@ -9,18 +9,13 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, ele int
    FROM (
      SELECT osm_id, geometry, name,
      COALESCE(NULLIF(name_en, ''), name) AS name_en,
-     substring(ele from E'^(-?\\d+)(\\D|$)')::int AS ele,
-     round(substring(ele from E'^(-?\\d+)(\\D|$)')::int*3.2808399)::int AS ele_ft,
+     ele, ele_ft,
        row_number() OVER (
            PARTITION BY LabelGrid(geometry, 100 * pixel_width)
-           ORDER BY (
-             substring(ele from E'^(-?\\d+)(\\D|$)')::int +
-             (CASE WHEN NULLIF(wikipedia, '') is not null THEN 10000 ELSE 0 END) +
-             (CASE WHEN NULLIF(name, '') is not null THEN 10000 ELSE 0 END)
-           ) DESC
+           ORDER BY (rank_points) DESC
        )::int AS "rank"
      FROM osm_peak_point
-     WHERE geometry && bbox AND ele is not null AND ele ~ E'^-?\\d+'
+     WHERE geometry && bbox
    ) AS ranked_peaks
    WHERE zoom_level >= 7 AND (rank <= 5 OR zoom_level >= 14)
    ORDER BY "rank" ASC;

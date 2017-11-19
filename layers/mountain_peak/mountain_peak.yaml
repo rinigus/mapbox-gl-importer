@@ -8,3 +8,4 @@ layers:
 
 schema:
   - layer.sql
+  - update.sql

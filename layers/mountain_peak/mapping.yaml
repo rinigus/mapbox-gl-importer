@@ -14,7 +14,13 @@ tables:
       type: string
     - name: ele
       key: ele
-      type: string
+      type: integer
+    - name: ele_ft
+      key: ele_ft
+      type: integer
+    - name: rank_points
+      key: rank_points
+      type: integer
     - name: wikipedia
       key: wikipedia
       type: string
