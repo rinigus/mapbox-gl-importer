@@ -32,6 +32,12 @@ tables:
       type: string
     - name: ele
       key: ele
+      type: integer
+    - name: ele_ft
+      key: ele_ft
+      type: integer
+    - name: class
+      key: class
       type: string
     type_mappings:
       points:
