@@ -45,6 +45,10 @@ def mkdir_p(path):
         else:
             raise
 
+def target_names(store, fname = None):
+    if fname is None: return store + ".done"
+    return store + "-" + fname, store + ".done/" + fname
+
 ##################################################################################################
 ## MAIN
 ##################################################################################################
@@ -172,35 +176,64 @@ for z in kk:
     else: cmds_section.append(cmd)
 
 fmakename = foutname + "-makefile"
+donedir = target_names(DATA_STORE)
 fmake = open(fmakename, "w")
 fmake.write("# Automatically generated Makefile by %s\n\n" % sys.argv[0])
 fmake.write("all: generate_all\n\n")
-fmake.write("clean:\n\trm -f %s*\n\n" % DATA_STORE)
+fmake.write("clean:\n\trm -rf %s %s*\n\n" % (donedir,DATA_STORE))
+fmake.write(donedir + ":\n\tmkdir -p %s\n\n" % donedir)
 targets = []
 
 # world layer
-name = DATA_STORE + "-world.sqlite"
-targets.append(name + "-done")
-fmake.write(name + "-done:\n")
+name, name_done = target_names(DATA_STORE,"world.sqlite")
+targets.append(name_done)
+fmake.write(name_done + ": " + donedir + "\n")
 for c in cmds_world:
     fmake.write("\t" + c + " mbtiles://" + name + "\n")
-fmake.write("\techo Done > " + name + "-done\n\n")
+fmake.write("\techo Done > " + name_done + "\n\n")
 
 # section layers
 z = WORLD_ZOOM+1
 tiles_per_coor = numTiles(z)
 for x in range(tiles_per_coor):
     for y in range(tiles_per_coor):
-        name = DATA_STORE + "-section-%d-%d-%d.sqlite" % (z, x, y)
-        targets.append(name + "-done")
+        name, name_done = target_names(DATA_STORE, "section-%d-%d-%d.sqlite" % (z, x, y))
+        targets.append(name_done)
         b = tile_bnd(x, y, z)
-        fmake.write(name + "-done:\n")
+        fmake.write(name_done + ": " + donedir + "\n")
         for c in cmds_section:
             fmake.write("\t" + c + (' --bounds="%s"' % b) + " mbtiles://" + name + "\n")
-        fmake.write("\techo Done > " + name + "-done\n\n")
+        fmake.write("\techo Done > " + name_done + "\n\n")
 
 fmake.write("generate_all: ")
 for t in targets: fmake.write(t + " ")
 fmake.write("\n\n")
 
 print "Import using make: make -f %s" % fmakename
+
+# progress monitor, based on https://github.com/fearside/ProgressBar/
+fprogressname = foutname + "-progress.sh"
+fprog = open(fprogressname, "w")
+fprog.write("#!/bin/bash\n")
+fprog.write("# Automatically generated progress monitor by %s\n\n" % sys.argv[0])
+fprog.write(
+r"""
+function ProgressBar {
+	let _progress=(${1}*100/${2}*100)/100
+	let _done=(${_progress}*5)/10
+	let _left=50-$_done
+	_done=$(printf "%${_done}s")
+	_left=$(printf "%${_left}s")
+    printf "\rTasks: ${2}  Progress: [${_done// /#}${_left// /-}] ${_progress}%%   Done: ${1}"
+}
+""" +
+"""
+while :
+do
+	ProgressBar `ls %s | wc -w` %d
+	sleep 15
+done
+""" % (donedir, len(targets))
+)
+
+print "Monitor import progress run by make using the following command: bash %s" % fprogressname
