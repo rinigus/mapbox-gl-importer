@@ -4,7 +4,7 @@ layers:
       SELECT geometry, name, COALESCE(NULLIF(name_en, ''), name) AS name_en, waterway AS class FROM
       osm_waterway_river_linestring_zZLEVEL
       WHERE geometry && !bbox!
-    zmin: 4
+    zmin: 8
     zmax: 12
 
   - id: waterway

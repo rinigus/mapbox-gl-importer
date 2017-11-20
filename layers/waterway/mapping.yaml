@@ -1,6 +1,6 @@
 auto_generalized_tables:
   waterway_river_linestring:
-    zmin: 4
+    zmin: 8
     zmax: 13
 
   waterway_linestring:
