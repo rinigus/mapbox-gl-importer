@@ -80,7 +80,6 @@ SET subclass = 'subway'
 WHERE station = 'subway' and subclass='station';
 
 UPDATE osm_poi_point
-SET class = poi_class(subclass, mapping_key);
-
-UPDATE osm_poi_point
-SET "rank" = poi_class_rank(class);
+SET
+class = poi_class(subclass, mapping_key),
+"rank" = poi_class_rank(class);
