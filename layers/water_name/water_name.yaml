@@ -10,7 +10,6 @@ layers:
       WHERE geometry && !bbox!
       ORDER BY area DESC
     zmin: 7
-    buffer-size: 256
 
 schema:
   - update.sql
