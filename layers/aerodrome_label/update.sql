@@ -1,3 +1,5 @@
+DROP INDEX IF EXISTS osm_aerodrome_label_point_geom;
+
 UPDATE osm_aerodrome_label_point
 SET geometry = ST_Centroid(geometry)
 WHERE ST_GeometryType(geometry) <> 'ST_Point';
@@ -30,4 +32,5 @@ class = CASE
 END,
 ele_ft = ele*3.2808399;
 
+CREATE INDEX IF NOT EXISTS osm_aerodrome_label_point_geom ON osm_aerodrome_label_point USING gist(geometry);
 CREATE INDEX IF NOT EXISTS osm_aerodrome_label_point_iata_idx ON osm_aerodrome_label_point USING gist(geometry) WHERE iata<>'';

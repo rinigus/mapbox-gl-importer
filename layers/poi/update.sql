@@ -67,6 +67,8 @@ RETURNS TEXT AS $$
     END;
 $$ LANGUAGE SQL IMMUTABLE;
 
+DROP INDEX IF EXISTS osm_poi_point_geom;
+
 INSERT INTO osm_poi_point (osm_id, geometry, class, "rank", name, name_en, subclass, mapping_key, station)
 SELECT osm_id,
   CASE WHEN ST_NPoints(ST_ConvexHull(geometry))=ST_NPoints(geometry) THEN ST_Centroid(geometry)
@@ -83,3 +85,5 @@ UPDATE osm_poi_point
 SET
 class = poi_class(subclass, mapping_key),
 "rank" = poi_class_rank(class);
+
+CREATE INDEX IF NOT EXISTS osm_poi_point_geom ON osm_poi_point USING gist(geometry);

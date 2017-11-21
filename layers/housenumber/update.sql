@@ -1,3 +1,5 @@
+DROP INDEX IF EXISTS osm_housenumber_point_geom;
+
 UPDATE osm_housenumber_point
 SET geometry =
   CASE WHEN ST_NPoints(ST_ConvexHull(geometry))=ST_NPoints(geometry)
@@ -5,3 +7,5 @@ SET geometry =
   ELSE ST_PointOnSurface(geometry)
   END
 WHERE ST_GeometryType(geometry) <> 'ST_Point';
+
+CREATE INDEX IF NOT EXISTS osm_housenumber_point_geom ON osm_housenumber_point USING gist(geometry);
