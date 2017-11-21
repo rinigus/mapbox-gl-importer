@@ -177,17 +177,18 @@ for z in kk:
 
 fmakename = foutname + "-makefile"
 donedir = target_names(DATA_STORE)
+donedir_target = donedir + "/.done"
 fmake = open(fmakename, "w")
 fmake.write("# Automatically generated Makefile by %s\n\n" % sys.argv[0])
 fmake.write("all: generate_all\n\n")
 fmake.write("clean:\n\trm -rf %s %s*\n\n" % (donedir,DATA_STORE))
-fmake.write(donedir + ":\n\tmkdir -p %s\n\n" % donedir)
+fmake.write(donedir_target + ":\n\tmkdir -p %s\n\ttouch %s\n\n" % (donedir,donedir_target))
 targets = []
 
 # world layer
 name, name_done = target_names(DATA_STORE,"world.sqlite")
 targets.append(name_done)
-fmake.write(name_done + ": " + donedir + "\n")
+fmake.write(name_done + ": " + donedir_target + "\n")
 for c in cmds_world:
     fmake.write("\t" + c + " mbtiles://" + name + "\n")
 fmake.write("\techo Done > " + name_done + "\n\n")
@@ -200,7 +201,7 @@ for x in range(tiles_per_coor):
         name, name_done = target_names(DATA_STORE, "section-%d-%d-%d.sqlite" % (z, x, y))
         targets.append(name_done)
         b = tile_bnd(x, y, z)
-        fmake.write(name_done + ": " + donedir + "\n")
+        fmake.write(name_done + ": " + donedir_target + "\n")
         for c in cmds_section:
             fmake.write("\t" + c + (' --bounds="%s"' % b) + " mbtiles://" + name + "\n")
         fmake.write("\techo Done > " + name_done + "\n\n")
@@ -224,7 +225,7 @@ function ProgressBar {
 	let _left=50-$_done
 	_done=$(printf "%${_done}s")
 	_left=$(printf "%${_left}s")
-    printf "\rTasks: ${2}  Progress: [${_done// /#}${_left// /-}] ${_progress}%%   Done: ${1}"
+    echo -ne "\r"`date "+%Y.%m.%e %H:%M:%S"` "  Tasks: ${2}  Progress: [${_done// /#}${_left// /-}] ${_progress}%   Done: ${1}"
 }
 """ +
 """
