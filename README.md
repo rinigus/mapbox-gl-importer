@@ -65,6 +65,8 @@ Vector tiles layers are defined using YAML configuration files that are scriptab
 
 There are two ways to generate vector tiles: using bash script or GNU make. The bash script allows to specify the additional parameters that will be passed to `tilelive-copy` as arguments. For example, bounding box and zoom levels could be specified allowing to generate vector tiles for specified coordinates into a single MBTiles file. GNU Makefile approach would generate vector tiles covering the planet by splitting the task into small sub-tasks. As a result, one can run several imports in parallel (`-j` option for `make`), stop the import and continue later with some loss of imported data due to interrupted jobs. It is suggested to use bash script for testing and make in production cases.
 
+Its possible to limit the coverage of planet import by POLY files. For that, create a subfolder named `hierarchy`, as in https://github.com/rinigus/osmscout-server/tree/master/scripts/import/hierarchy and position POLY files under the subfolders of `hierarchy`. The vector tile source generation script `prepare_vector_source.sh` will read POLY files stored at `hierarchy/*/poly` and check each tile for intersection with at least one of the given polygons. For example, one can just use hierarchy as provided in OSM Scout Server import scripts to exclude Antarctica. 
+
 The information regarding bash script path and make example are listed at the end of `./generate_vector_source.py` run (this script is executed as a part of `prepare_vector_source.sh`). While import using make is shown with the full command, for bash script only the path of the script is printed. An example usage for importing using the bash script:
 
 ```

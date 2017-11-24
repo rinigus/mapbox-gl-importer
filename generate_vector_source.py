@@ -8,7 +8,7 @@ WORLD_ZOOM = 6
 ## Imports
 ##################################################################################################
 
-import sys, copy, os, codecs, math, errno
+import sys, copy, os, codecs, math, errno, glob
 from yaml import load as yload
 try:
     from yaml import CLoader as Loader, CDumper as Dumper
@@ -16,6 +16,7 @@ except ImportError:
     from yaml import Loader, Dumper
 from lxml import etree
 from jinja2 import Template
+from poly import parse_poly, intersects
 
 ##################################################################################################
 ## Helper functions
@@ -34,7 +35,7 @@ def tile_bnd(xtile, ytile, zoom):
     b1 = num2deg(xtile, ytile, zoom)
     b2 = num2deg(xtile+1, ytile+1, zoom)
     bndstring = "%f,%f,%f,%f" % (b1[1], b2[0], b2[1], b1[0])
-    return bndstring
+    return bndstring, [b1[1], b2[0], b2[1], b1[0]]
 
 def mkdir_p(path):
     try:
@@ -171,7 +172,7 @@ cmds_section = []
 for z in kk:
     Z = xml_range[z]
     fname = "%s-%s-%s" % (foutname, Z[0], Z[1])
-    cmd = "tilelive-copy --timeout=300000 --minzoom=%s --maxzoom=%s --scheme=pyramid bridge://%s" % (Z[0], Z[1], fname)
+    cmd = "tilelive-copy --timeout=3600000 --minzoom=%s --maxzoom=%s --scheme=pyramid bridge://%s" % (Z[0], Z[1], fname)
     if z <= WORLD_ZOOM: cmds_world.append(cmd)
     else: cmds_section.append(cmd)
 
@@ -193,18 +194,28 @@ for c in cmds_world:
     fmake.write("\t" + c + " mbtiles://" + name + "\n")
 fmake.write("\techo Done > " + name_done + "\n\n")
 
+# fill the polygons that cover interesing areas as specified under hierarchy
+areas = None
+if os.path.exists('hierarchy'):
+    areas = []
+    for g in glob.glob('hierarchy/*/poly'):
+        print "Loading:", g
+        areas.append(parse_poly(g))
+
 # section layers
 z = WORLD_ZOOM+1
 tiles_per_coor = numTiles(z)
 for x in range(tiles_per_coor):
     for y in range(tiles_per_coor):
         name, name_done = target_names(DATA_STORE, "section-%d-%d-%d.sqlite" % (z, x, y))
-        targets.append(name_done)
-        b = tile_bnd(x, y, z)
-        fmake.write(name_done + ": " + donedir_target + "\n")
-        for c in cmds_section:
-            fmake.write("\t" + c + (' --bounds="%s"' % b) + " mbtiles://" + name + "\n")
-        fmake.write("\techo Done > " + name_done + "\n\n")
+        b, coors = tile_bnd(x, y, z)
+        if areas is None or intersects(areas, coors):
+            targets.append(name_done)
+            fmake.write(name_done + ": " + donedir_target + "\n")
+            for c in cmds_section:
+                fmake.write("\t" + c + (' --bounds="%s"' % b) + " mbtiles://" + name)
+                fmake.write("\n")
+            fmake.write("\techo Done > " + name_done + "\n\n")
 
 fmake.write("generate_all: ")
 for t in targets: fmake.write(t + " ")
