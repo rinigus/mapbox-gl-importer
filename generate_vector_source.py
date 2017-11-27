@@ -47,6 +47,8 @@ def mkdir_p(path):
             raise
 
 def target_names(store, fname = None):
+    # if this is going to be changed, see definition of meta and
+    # change accordingly
     if fname is None: return store + ".done"
     return store + "-" + fname, store + ".done/" + fname
 
@@ -65,7 +67,10 @@ DATA_STORE = sys.argv[2]
 
 foutdir = os.path.abspath(os.path.splitext(finname)[0])
 foutname = os.path.abspath(os.path.join(foutdir,"layers.xml"))
+ftiledir,ftilename = os.path.split(DATA_STORE)
+fmetadir = os.path.abspath(os.path.join(ftiledir, "meta"))
 mkdir_p(foutdir)
+mkdir_p(fmetadir)
 
 print "Reading:", finname
 print "Writing:", foutname
@@ -198,16 +203,22 @@ fmake.write("\techo Done > " + name_done + "\n\n")
 areas = None
 if os.path.exists('hierarchy'):
     areas = []
-    for g in glob.glob('hierarchy/*/poly'):
-        print "Loading:", g
-        areas.append(parse_poly(g))
+    for root, folders, files in os.walk('hierarchy'):
+        if "poly" in files and not "ignore" in files:
+            areas.append(parse_poly(os.path.join(root, "poly")))
+
+print "Checking sections against %d areas" % len(areas)
 
 # section layers
 z = WORLD_ZOOM+1
 tiles_per_coor = numTiles(z)
+# rmsc = ""
 for x in range(tiles_per_coor):
     for y in range(tiles_per_coor):
         name, name_done = target_names(DATA_STORE, "section-%d-%d-%d.sqlite" % (z, x, y))
+        # not the best way since it depends on implementation of target_names
+        meta = os.path.abspath(os.path.join(fmetadir,
+                                            ftilename + "-section-%d-%d-%d.sqlite.bbox" % (z, x, y)))
         b, coors = tile_bnd(x, y, z)
         if areas is None or intersects(areas, coors):
             targets.append(name_done)
@@ -216,6 +227,13 @@ for x in range(tiles_per_coor):
                 fmake.write("\t" + c + (' --bounds="%s"' % b) + " mbtiles://" + name)
                 fmake.write("\n")
             fmake.write("\techo Done > " + name_done + "\n\n")
+
+            fmeta = open(meta, "w")
+            for i in coors: fmeta.write(str(i) + " ")
+            fmeta.write("\n")
+            
+        # else:
+        #     rmsc += "rm " + name + " " + name_done + "\n"
 
 fmake.write("generate_all: ")
 for t in targets: fmake.write(t + " ")
@@ -249,3 +267,6 @@ done
 )
 
 print "Monitor import progress run by make using the following command: bash %s" % fprogressname
+
+# f = open("rmhelper.sh", "w")
+# f.write(rmsc)
