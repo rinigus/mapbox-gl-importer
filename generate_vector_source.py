@@ -207,7 +207,8 @@ if os.path.exists('hierarchy'):
         if "poly" in files and not "ignore" in files:
             areas.append(parse_poly(os.path.join(root, "poly")))
 
-print "Checking sections against %d areas" % len(areas)
+if areas is not None:
+    print "Checking sections against %d areas" % len(areas)
 
 # section layers
 z = WORLD_ZOOM+1

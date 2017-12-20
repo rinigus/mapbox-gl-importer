@@ -64,7 +64,6 @@ builddir = sys.argv[2]
 # load project
 layers = loadyaml(os.path.join(projectdir, "layers-list.yaml"))
 project = collections.defaultdict(dict)
-update_sql = ""
 
 for l in layers:
     print "Layer:", l
@@ -88,6 +87,7 @@ for l in layers:
         elif k in ["generalized_tables", "tables"]:
             if current[k] is not None:
                 project[k].update(current[k])
+    update_sql = ""
     for sql in schema:
         current_sql = os.path.join(projectdir, l, sql)
         if os.path.exists(current_sql):
@@ -97,11 +97,14 @@ for l in layers:
             for z in reversed(range(MAX_POSSIBLE_ZLEVEL)):
                 sql = sql.replace("ZTOL%d" % z, str(ztol(z)))
             update_sql += '--- ' + l + "\n" + sql + "\n\n"
+    if len(update_sql) > 0:
+        with open(os.path.join(builddir, "layer_%s.sql" % l), mode="w") as f:
+            f.write(update_sql)
 
 mkdir_p(builddir)
 with open(os.path.join(builddir, "mapping.yaml"), mode="w") as f:
     f.write(ydump(dict(project), Dumper=Dumper))
 
-update_sql += "VACUUM ANALYZE;\n"
-with open(os.path.join(builddir, "update.sql"), mode="w") as f:
+update_sql = "VACUUM ANALYZE;\n"
+with open(os.path.join(builddir, "last_update.sql"), mode="w") as f:
     f.write(update_sql)
