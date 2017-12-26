@@ -16,6 +16,8 @@ def_poi_mapping_amenity: &poi_mapping_amenity
   - biergarten
   - bus_station
   - cafe
+  - car_rental
+  - charging_station
   - cinema
   - clinic
   - college
@@ -35,17 +37,14 @@ def_poi_mapping_amenity: &poi_mapping_amenity
   - kindergarten
   - library
   - marketplace
-  - nightclub
   - nursing_home
+  - parking
   - pharmacy
   - place_of_worship
   - police
-  - post_box
   - post_office
   - prison
   - pub
-  - public_building
-  - recycling
   - restaurant
   - school
   - shelter
@@ -57,18 +56,16 @@ def_poi_mapping_amenity: &poi_mapping_amenity
   - townhall
   - university
   - veterinary
-  - waste_basket
 
 # barrier values , see http://taginfo.openstreetmap.org/keys/barrier#values
 def_poi_mapping_barrier: &poi_mapping_barrier
-  - bollard
   - border_control
-  - cycle_barrier
-  - gate
-  - lift_gate
-  - sally_port
-  - stile
-  - toll_booth
+
+def_poi_mapping_building: &poi_mapping_building
+  - college
+  - kindergarten
+  - school
+  - university
 
 # highway values , see http://taginfo.openstreetmap.org/keys/highway#values
 def_poi_mapping_highway: &poi_mapping_highway
@@ -81,7 +78,6 @@ def_poi_mapping_historic: &poi_mapping_historic
 # landuse values , see http://taginfo.openstreetmap.org/keys/landuse#values
 def_poi_mapping_landuse: &poi_mapping_landuse
   - basin
-  - brownfield
   - cemetery
   - reservoir
 
@@ -102,11 +98,21 @@ def_poi_mapping_leisure: &poi_mapping_leisure
   - swimming_pool
   - water_park
 
+# man-made, see http://taginfo.openstreetmap.org/keys/man_made#values
+def_poi_mapping_manmade: &poi_mapping_man_made
+  - lighthouse
+
 # railway values , see http://taginfo.openstreetmap.org/keys/railway#values
 def_poi_mapping_railway: &poi_mapping_railway
   - station
   - halt
   - tram_stop
+
+# religion values , see http://taginfo.openstreetmap.org/keys/religion#values
+def_poi_mapping_religion: &poi_mapping_religion
+  - christian
+  - jewish
+  - muslim
 
 # shop values , see http://taginfo.openstreetmap.org/keys/shop#values
 def_poi_mapping_shop: &poi_mapping_shop
@@ -143,8 +149,8 @@ def_poi_mapping_shop: &poi_mapping_shop
   - doityourself
   - dry_cleaning
   - electronics
-  - erotic
   - fabric
+  - fishmonger
   - florist
   - furniture
   - garden_centre
@@ -298,6 +304,93 @@ def_poi_mapping_tourism: &poi_mapping_tourism
 def_poi_mapping_waterway: &poi_mapping_waterway
   - dock
 
+# data fields
+def_aerialway: &aerialway
+  name: aerialway
+  key: aerialway
+  type: string
+
+def_amenity: &amenity
+  name: amenity
+  key: amenity
+  type: string
+
+def_barrier: &barrier
+  name: barrier
+  key: barrier
+  type: string
+
+def_building: &building
+  name: building
+  key: building
+  type: string
+
+def_highway: &highway
+  name: highway
+  key: highway
+  type: string
+
+def_historic: &historic
+  name: historic
+  key: historic
+  type: string
+
+def_landuse: &landuse
+  name: landuse
+  key: landuse
+  type: string
+
+def_leisure: &leisure
+  name: leisure
+  key: leisure
+  type: string
+
+def_man_made: &man_made
+  name: man_made
+  key: man_made
+  type: string
+
+def_railway: &railway
+  name: railway
+  key: railway
+  type: string
+
+def_religion: &religion
+  name: religion
+  key: religion
+  type: string
+
+def_shop: &shop
+  name: shop
+  key: shop
+  type: string
+
+def_sport: &sport
+  name: sport
+  key: sport
+  type: string
+
+def_station: &station
+  name: station
+  key: station
+  type: string
+
+def_tourism: &tourism
+  name: tourism
+  key: tourism
+  type: string
+
+def_waterway: &waterway
+  name: waterway
+  key: waterway
+  type: string
+
+
+# all data is transferred to point later
+# as a part of sql treatment. hence, no need
+# to have all elements in polygon table
+
+# while religion is recorded, its not used for mapping
 tables:
   poi_point:
     type: point
@@ -307,10 +400,12 @@ tables:
     - name: geometry
       type: geometry
     - name: class
-      key: class
       type: string
+    - name: symbol
+      type: string
+    - name: zlevel
+      type: integer
     - name: rank
-      key: rank
       type: integer
     - name: name
       key: name
@@ -318,22 +413,34 @@ tables:
     - name: name_en
       key: name:en
       type: string
-    - name: subclass
-      type: mapping_value
-    - name: mapping_key
-      type: mapping_key
-    - name: station
-      key: station
-      type: string
+    - *aerialway
+    - *amenity
+    - *barrier
+    - *building
+    - *highway
+    - *historic
+    - *landuse
+    - *leisure
+    - *man_made
+    - *railway
+    - *religion
+    - *shop
+    - *sport
+    - *station
+    - *tourism
+    - *waterway
     mapping:
       aerialway: *poi_mapping_aerialway
       amenity: *poi_mapping_amenity
       barrier: *poi_mapping_barrier
+      building: *poi_mapping_building
       highway: *poi_mapping_highway
       historic: *poi_mapping_historic
       landuse: *poi_mapping_landuse
       leisure: *poi_mapping_leisure
+      man_made: *poi_mapping_man_made
       railway: *poi_mapping_railway
+      #religion: *poi_mapping_religion
       shop: *poi_mapping_shop
       sport: *poi_mapping_sport
       tourism: *poi_mapping_tourism
@@ -346,34 +453,40 @@ tables:
       type: id
     - name: geometry
       type: geometry
-    - name: class
-      key: class
-      type: string
-    - name: rank
-      key: rank
-      type: integer
     - name: name
       key: name
       type: string
     - name: name_en
       key: name:en
       type: string
-    - name: subclass
-      type: mapping_value
-    - name: mapping_key
-      type: mapping_key
-    - name: station
-      key: station
-      type: string
+    - *aerialway
+    - *amenity
+    - *barrier
+    - *building
+    - *highway
+    - *historic
+    - *landuse
+    - *leisure
+    - *man_made
+    - *railway
+    - *religion
+    - *shop
+    - *sport
+    - *station
+    - *tourism
+    - *waterway
     mapping:
       aerialway: *poi_mapping_aerialway
       amenity: *poi_mapping_amenity
       barrier: *poi_mapping_barrier
+      building: *poi_mapping_building
       highway: *poi_mapping_highway
       historic: *poi_mapping_historic
       landuse: *poi_mapping_landuse
       leisure: *poi_mapping_leisure
+      man_made: *poi_mapping_man_made
       railway: *poi_mapping_railway
+      #religion: *poi_mapping_religion
       shop: *poi_mapping_shop
       sport: *poi_mapping_sport
       tourism: *poi_mapping_tourism
