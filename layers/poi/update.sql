@@ -102,7 +102,7 @@ WHEN amenity IN ('college', 'kindergarten', 'school', 'university') OR
                   THEN 'school'
 WHEN amenity IN ('bank', 'community_centre', 'courthouse', 'embassy', 'fire_station', 'grave_yard', 'library', 'place_of_worship', 
                  'post_office', 'shelter', 'telephone', 'toilets', 'townhall') OR
-                 historic IN ('monument') OR
+                 historic IN ('castle', 'monument') OR
                  landuse IN ('basin', 'cemetery', 'reservoir') OR
                  leisure IN ('dog_park', 'garden', 'marina', 'park', 'playground', 'water_park') OR
                  man_made IN ('lighthouse') OR
@@ -142,7 +142,7 @@ WHEN amenity IN ('bank', 'bar', 'bbq', 'bicycle_rental', 'cafe', 'charging_stati
                  'prison', 'restaurant', 'school', 'shelter', 'telephone', 'theatre', 'toilets',
                  'townhall', 'veterinary') THEN amenity
 WHEN building IN ('college', 'school') THEN building
-WHEN historic IN ('monument') THEN historic
+WHEN historic IN ('castle', 'monument') THEN historic
 WHEN leisure IN ('golf_course', 'miniature_golf') THEN 'golf'
 WHEN leisure IN ('dog_park', 'garden', 'park', 'pitch', 'playground', 'stadium') THEN leisure
 WHEN man_made IN ('lighthouse') THEN man_made
@@ -157,6 +157,16 @@ WHEN shop IN ('fishmonger', 'seafood') THEN 'shop_seafood'
 WHEN shop IN ('ice_cream') THEN 'ice_cream'
 WHEN shop IN ('art', 'bag', 'bakery', 'coffee', 'convenience', 'deli', 'department_store', 
               'garden_centre', 'pet', 'toys', 'sports') THEN 'shop_' || shop
+WHEN sport IN ('cycling') THEN 'bicycle'
+WHEN sport IN ('horse_racing') THEN 'horse_riding'
+WHEN sport IN ('american_football', 'baseball', 'basketball', 'cricket', 'golf',
+               'skiing', 'soccer', 'swimming', 'tennis' ) THEN sport
+WHEN tourism IN ('alpine_hut') THEN 'shelter'
+WHEN tourism IN ('bed_and_breakfast', 'guest_house', 'hostel', 'hotel', 'motel') THEN 'lodging'
+WHEN tourism IN ('caravan_site') THEN 'camp_site'
+WHEN tourism IN ('chalet') THEN 'home'
+WHEN tourism IN ('gallery') THEN 'art_gallery'
+WHEN tourism IN ('attraction', 'camp_site', 'information', 'museum', 'picnic_site', 'zoo') THEN tourism
 
 -- specified cases without symbols
 WHEN amenity IN ('nursing_home') OR landuse IN ('basin', 'reservoir', 'sports_centre') OR
