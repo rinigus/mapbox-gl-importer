@@ -45,6 +45,8 @@ def_poi_mapping_amenity: &poi_mapping_amenity
   - post_office
   - prison
   - pub
+  - ranger_station
+  - recycling
   - restaurant
   - school
   - shelter
@@ -73,6 +75,7 @@ def_poi_mapping_highway: &poi_mapping_highway
 
 # historic values , see http://taginfo.openstreetmap.org/keys/historic#values
 def_poi_mapping_historic: &poi_mapping_historic
+  - castle
   - monument
 
 # landuse values , see http://taginfo.openstreetmap.org/keys/landuse#values
@@ -110,6 +113,7 @@ def_poi_mapping_railway: &poi_mapping_railway
 
 # religion values , see http://taginfo.openstreetmap.org/keys/religion#values
 def_poi_mapping_religion: &poi_mapping_religion
+  - buddhist
   - christian
   - jewish
   - muslim
@@ -282,6 +286,7 @@ def_poi_mapping_sport: &poi_mapping_sport
 # tourism values , see http://taginfo.openstreetmap.org/keys/tourism#values
 def_poi_mapping_tourism: &poi_mapping_tourism
   - alpine_hut
+  - aquarium
   - artwork
   - attraction
   - bed_and_breakfast

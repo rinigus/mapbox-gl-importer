@@ -203,7 +203,7 @@ fmake.write("\techo Done > " + name_done + "\n\n")
 areas = None
 if os.path.exists('hierarchy'):
     areas = []
-    for root, folders, files in os.walk('hierarchy'):
+    for root, folders, files in os.walk('hierarchy', followlinks=True):
         if "poly" in files and not "ignore" in files:
             areas.append(parse_poly(os.path.join(root, "poly")))
 
