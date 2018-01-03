@@ -5,7 +5,7 @@ layers:
       FROM osm_poi_point
       WHERE geometry && !bbox!
       {% if z <= 13 %}
-      AND rank <= z
+      AND rank <= ZLEVEL
       {% endif %}
     zmin: 13
 

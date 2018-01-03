@@ -12,7 +12,7 @@ layers:
       osm_country_point
       WHERE geometry && !bbox!
       ORDER BY population DESC
-    zmin: 4
+    zmin: 0
     zmax: 10
 
   - id: place_state

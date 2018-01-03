@@ -2,10 +2,12 @@ layers:
   - id: boundary
     table: |
       SELECT geometry, admin_level, disputed, maritime
-      {% if z <= 13 %}
+      {% if z <= 4 %}
+      FROM osm_border_linestring_z4
+      {% elif z <= 13 %}
       FROM osm_border_linestring_zZLEVEL
       {% else %}
       FROM osm_border_linestring
       {% endif %}
       WHERE geometry && !bbox! AND admin_level <= 2
-    zmin: 4
+    zmin: 0
