@@ -69,5 +69,5 @@ CREATE INDEX IF NOT EXISTS osm_landcover_processed_polygon_z10_geometry_idx ON o
 CREATE INDEX IF NOT EXISTS osm_landcover_processed_polygon_z9_geometry_idx ON osm_landcover_processed_polygon_z9 USING gist (geometry);
 CREATE INDEX IF NOT EXISTS osm_landcover_processed_polygon_z8_geometry_idx ON osm_landcover_processed_polygon_z8 USING gist (geometry);
 CREATE INDEX IF NOT EXISTS osm_landcover_processed_polygon_z7_geometry_idx ON osm_landcover_processed_polygon_z7 USING gist (geometry);
-CREATE INDEX IF NOT EXISTS osm_landcover_processed_polygon_z6_geometry_idx ON osm_landcover_processed_polygon_z8 USING gist (geometry);
-CREATE INDEX IF NOT EXISTS osm_landcover_processed_polygon_z5_geometry_idx ON osm_landcover_processed_polygon_z7 USING gist (geometry);
+CREATE INDEX IF NOT EXISTS osm_landcover_processed_polygon_z6_geometry_idx ON osm_landcover_processed_polygon_z6 USING gist (geometry);
+CREATE INDEX IF NOT EXISTS osm_landcover_processed_polygon_z5_geometry_idx ON osm_landcover_processed_polygon_z5 USING gist (geometry);
