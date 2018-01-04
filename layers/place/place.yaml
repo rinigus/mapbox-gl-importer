@@ -22,7 +22,7 @@ layers:
       WHERE geometry && !bbox!
       ORDER BY population DESC
     zmin: 5
-    zmax: 11
+    zmax: 10
 
   - id: place_island
     table: |
@@ -46,7 +46,6 @@ layers:
       WHERE geometry && !bbox!
       ORDER BY population DESC
     zmin: 5
-    zmax: 14
 
   - id: place_city
     table: |
@@ -54,8 +53,7 @@ layers:
       osm_city_point
       WHERE geometry && !bbox!
       ORDER BY z_order, population DESC
-    zmin: 8
-    zmax: 14
+    zmin: 7
 
   - id: place_town
     table: |
@@ -63,14 +61,14 @@ layers:
       osm_town_point
       WHERE geometry && !bbox!
       ORDER BY population DESC
-    zmin: 9
+    zmin: 8
 
   - id: place_village
     table: |
       SELECT geometry, name, COALESCE(NULLIF(name_en, ''), name) AS name_en FROM
       osm_village_point
       WHERE geometry && !bbox!
-    zmin: 12
+    zmin: 9
 
   - id: place_other
     table: |
@@ -78,7 +76,7 @@ layers:
       osm_place_other_point
       WHERE geometry && !bbox!
       ORDER BY z_order DESC
-    zmin: 13
+    zmin: 10
 
 schema:
   - ./island_rank.sql
