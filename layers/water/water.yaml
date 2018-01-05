@@ -33,4 +33,18 @@ layers:
       {% endif %}
       WHERE geometry && !bbox!
     zmin: 10
-    zmax: 14
+
+  - id: water_name
+    table: |
+      SELECT geometry, name, COALESCE(NULLIF(name_en, ''), name) AS name_en, rank, class
+      {% if z <= 13 %}
+      FROM osm_water_point_zZLEVEL
+      {% else %}
+      FROM osm_water_point
+      {% endif %}
+      WHERE geometry && !bbox!
+      ORDER BY area DESC
+    zmin: 7
+
+schema:
+  - update.sql

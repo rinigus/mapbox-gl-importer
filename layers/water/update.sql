@@ -3,14 +3,28 @@ DROP TABLE IF EXISTS  osm_water_point CASCADE;
 CREATE TABLE osm_water_point AS (
   SELECT osm_id, ST_PointOnSurface(geometry) AS geometry, name,
   COALESCE(NULLIF(name_en, ''), name) AS name_en,
-  CASE WHEN waterway='' AND water<>'river' THEN 'lake' ELSE 'river' END AS class, area
+  CASE WHEN waterway='' AND water<>'river' THEN 'lake' ELSE 'river' END AS class,
+  CASE
+  WHEN area>6553600000 THEN 7
+  WHEN area>1638400000 THEN 8
+  WHEN area>409600000 THEN 9
+  WHEN area>102400000 THEN 10
+  WHEN area>25600000 THEN 11
+  WHEN area>6400000 THEN 12
+  WHEN area>1600000 THEN 13
+  WHEN area>320000 THEN 14
+  WHEN area>80000 THEN 15
+  WHEN area>20000 THEN 16
+  WHEN area>5000 THEN 17
+  ELSE 18 END
+  AS rank, area
   FROM osm_water_polygon
   WHERE name<>'' AND area > 25000
   UNION ALL
   SELECT osm_id, geometry, name,
   COALESCE(NULLIF(name_en, ''), name) AS name_en,
   place AS class,
-  NULL AS area
+  18 AS rank, NULL AS area
   FROM osm_marine_point
   WHERE name<>''
 );
