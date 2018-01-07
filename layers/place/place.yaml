@@ -82,3 +82,4 @@ schema:
   - ./island_rank.sql
   - ./update_island.sql
   - ./update_zorder.sql
+  - ./update.sql

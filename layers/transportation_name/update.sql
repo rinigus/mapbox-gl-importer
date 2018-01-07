@@ -1,0 +1,1 @@
+CLUSTER osm_transportation_name_linestring USING osm_transportation_name_linestring_geometry_idx;

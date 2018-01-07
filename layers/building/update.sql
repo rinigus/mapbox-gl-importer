@@ -22,7 +22,7 @@ CREATE TABLE osm_all_buildings AS (
                   COALESCE(nullif(as_numeric(levels),-1),nullif(as_numeric(buildinglevels),-1)) as levels,
                   COALESCE(nullif(as_numeric(min_level),-1),nullif(as_numeric(buildingmin_level),-1)) as min_level
          FROM
-         osm_building_relation WHERE building = ''
+         osm_building_relation WHERE building = '' AND area > 1
          UNION ALL
 
          -- etldoc: osm_building_associatedstreet -> layer_building:z14_
@@ -33,7 +33,7 @@ CREATE TABLE osm_all_buildings AS (
                   COALESCE(nullif(as_numeric(levels),-1),nullif(as_numeric(buildinglevels),-1)) as levels,
                   COALESCE(nullif(as_numeric(min_level),-1),nullif(as_numeric(buildingmin_level),-1)) as min_level
          FROM
-         osm_building_associatedstreet WHERE role = 'house'
+         osm_building_associatedstreet WHERE role = 'house' AND area > 1
          UNION ALL
          -- etldoc: osm_building_street -> layer_building:z14_
          -- Buildings in street relations
@@ -43,7 +43,7 @@ CREATE TABLE osm_all_buildings AS (
                   COALESCE(nullif(as_numeric(levels),-1),nullif(as_numeric(buildinglevels),-1)) as levels,
                   COALESCE(nullif(as_numeric(min_level),-1),nullif(as_numeric(buildingmin_level),-1)) as min_level
          FROM
-         osm_building_street WHERE role = 'house'
+         osm_building_street WHERE role = 'house' AND area > 1
          UNION ALL
 
          -- etldoc: osm_building_polygon -> layer_building:z14_
@@ -54,7 +54,7 @@ CREATE TABLE osm_all_buildings AS (
                   COALESCE(nullif(as_numeric(levels),-1),nullif(as_numeric(buildinglevels),-1)) as levels,
                   COALESCE(nullif(as_numeric(min_level),-1),nullif(as_numeric(buildingmin_level),-1)) as min_level
          FROM
-         osm_building_polygon obp WHERE EXISTS (SELECT 1 FROM osm_building_multipolygon obm WHERE obp.osm_id = obm.osm_id)
+         osm_building_polygon obp WHERE EXISTS (SELECT 1 FROM osm_building_multipolygon obm WHERE obp.osm_id = obm.osm_id) AND area > 1
          UNION ALL
          -- etldoc: osm_building_polygon -> layer_building:z14_
          -- Standalone buildings
@@ -64,7 +64,7 @@ CREATE TABLE osm_all_buildings AS (
                   COALESCE(nullif(as_numeric(levels),-1),nullif(as_numeric(buildinglevels),-1)) as levels,
                   COALESCE(nullif(as_numeric(min_level),-1),nullif(as_numeric(buildingmin_level),-1)) as min_level
          FROM
-         osm_building_polygon WHERE osm_id >= 0
+         osm_building_polygon WHERE osm_id >= 0 AND area > 1
 );
 
 DROP TABLE IF EXISTS osm_all_buildings_z13 CASCADE;
@@ -74,3 +74,6 @@ UPDATE osm_all_buildings_z13 SET geometry = ST_SimplifyPreserveTopology(geometry
 
 CREATE INDEX IF NOT EXISTS osm_all_buildings_geometry_idx ON osm_all_buildings USING gist (geometry);
 CREATE INDEX IF NOT EXISTS osm_all_buildings_z13_geometry_idx ON osm_all_buildings_z13 USING gist (geometry);
+
+CLUSTER osm_all_buildings USING osm_all_buildings_geometry_idx;
+CLUSTER osm_all_buildings_z13 USING osm_all_buildings_z13_geometry_idx;

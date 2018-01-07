@@ -1,0 +1,1 @@
+CLUSTER osm_highway_linestring USING osm_highway_linestring_geom;

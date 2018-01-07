@@ -9,3 +9,5 @@ schema:
   - ./class.sql
   - ./update_transportation_merge.sql
   - ./layer.sql
+  - ./update.sql
+

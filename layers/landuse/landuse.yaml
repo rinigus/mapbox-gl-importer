@@ -16,3 +16,6 @@ layers:
       WHERE geometry && !bbox!
       ORDER BY area DESC
     zmin: 7
+
+schema:
+  - update.sql

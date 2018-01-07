@@ -17,3 +17,6 @@ layers:
       {% endif %}
       WHERE geometry && !bbox!
     zmin: 10
+
+schema:
+  - update.sql

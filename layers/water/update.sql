@@ -55,3 +55,6 @@ CREATE INDEX IF NOT EXISTS osm_water_point_z10_geometry_idx ON osm_water_point_z
 CREATE INDEX IF NOT EXISTS osm_water_point_z9_geometry_idx ON osm_water_point_z9 USING gist (geometry);
 CREATE INDEX IF NOT EXISTS osm_water_point_z8_geometry_idx ON osm_water_point_z8 USING gist (geometry);
 CREATE INDEX IF NOT EXISTS osm_water_point_z7_geometry_idx ON osm_water_point_z7 USING gist (geometry);
+
+CLUSTER osm_ocean_polygon USING osm_ocean_polygon_geometry_idx;
+CLUSTER osm_water_polygon USING osm_water_polygon_geom;

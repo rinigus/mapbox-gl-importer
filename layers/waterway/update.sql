@@ -1,0 +1,2 @@
+CLUSTER osm_waterway_river_linestring USING osm_waterway_river_linestring_geom;
+CLUSTER osm_waterway_linestring USING osm_waterway_linestring_geom;

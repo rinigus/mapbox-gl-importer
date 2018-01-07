@@ -1,0 +1,1 @@
+CLUSTER osm_place_other_point USING osm_place_other_point_geom;

@@ -19,7 +19,7 @@ CREATE TABLE osm_landcover_processed_polygon AS (
       NULLIF("natural", ''), NULLIF(landuse, ''),
       NULLIF(leisure, ''), NULLIF(wetland, '')
     ) AS subclass, area
-    FROM osm_landcover_polygon
+    FROM osm_landcover_polygon WHERE area > 1
 );
 
 DROP TABLE IF EXISTS  osm_landcover_processed_polygon_z13 CASCADE;
@@ -71,3 +71,6 @@ CREATE INDEX IF NOT EXISTS osm_landcover_processed_polygon_z8_geometry_idx ON os
 CREATE INDEX IF NOT EXISTS osm_landcover_processed_polygon_z7_geometry_idx ON osm_landcover_processed_polygon_z7 USING gist (geometry);
 CREATE INDEX IF NOT EXISTS osm_landcover_processed_polygon_z6_geometry_idx ON osm_landcover_processed_polygon_z6 USING gist (geometry);
 CREATE INDEX IF NOT EXISTS osm_landcover_processed_polygon_z5_geometry_idx ON osm_landcover_processed_polygon_z5 USING gist (geometry);
+
+CLUSTER osm_landcover_processed_polygon USING osm_landcover_processed_polygon_geometry_idx;
+CLUSTER osm_landcover_processed_polygon_z13 USING osm_landcover_processed_polygon_z13_geometry_idx;

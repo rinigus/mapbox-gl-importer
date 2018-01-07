@@ -124,3 +124,4 @@ ELSE 99 END;
 -- "rank" = poi_class_rank(class);
 
 CREATE INDEX IF NOT EXISTS osm_poi_point_geom ON osm_poi_point USING gist(geometry);
+CLUSTER osm_poi_point USING osm_poi_point_geom;
