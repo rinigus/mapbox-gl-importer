@@ -14,6 +14,7 @@ defaults:
   key_field:
   key_field_as_attribute:
   srid: 900913
+  geometry_field: geometry
   zmin: 0
   zmax: 20
   buffer-size: 4
