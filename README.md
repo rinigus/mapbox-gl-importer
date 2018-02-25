@@ -2,11 +2,32 @@
 
 Mapbox GL map import is based on [OpenMapTiles schema](https://github.com/openmaptiles/openmaptiles).
 
-In contrast to OpenMapTiles approach, this import procedure does not require docker images and is using the directly accessible database. The imported tiles are split along zoom level 7 into global (zooms 0-6) and local (7-14) tiles. This is to simplify redistribution of the generated tiles and their usage in offline applications, such as [OSM Scout Server](https://rinigus.github.io/osmscout-server). Import can be done by GNU `make` allowing usage of parallel import jobs.
+## Schema
+
+The imported tiles are split along zoom level 7 into global (zooms 0-6) and local (7-14) tiles. This is to simplify redistribution of the generated tiles and their usage in offline applications, such as [OSM Scout Server](https://rinigus.github.io/osmscout-server).
+
+Schema is described under layers folder, with each of the tile layers in separate subfolder. For almost all of the layers, there are several files describing the import:
+
+* a configuration file for imposm3 (`mapping.yaml`) that is used to pull data from planet.pbf into PostGIS;
+* SQL script(s) to adjust the data in PostGIS;
+* Vector tile definition file that is used to pull data from PostGIS into vector tile. This file is scriptable using Jinja2 allowing to change definitions on the basis of the used zoom level, as given by ZLEVEL variable in the configuration files.
+
+While tile schema description is mainly via the scripts defining layers, here are few differences when compared to the OpenMapTiles schema:
+
+* POI layer has `class`, `symbol`, and `rank`. Here, `class` is used to group POIs into health, transport, public and few other classes while `symbol` is assigned on specific type of POI. It is expected, that the style will provide an icon for each of the used symbols.
+
+* Aerodrome label and house name layers were added.
+
+* Several layers were simplified or dropped.
+
+
+## General import description
+
+In contrast to OpenMapTiles approach, this import procedure does not require docker images and is using the directly accessible database. Import can be done by GNU `make` allowing usage of parallel import jobs.
 
 The overall import procedure is split into importing PBFs into the data source supported by Mapnik (such as PostGIS), generation of Mapnik XML used as a source by `tilelive-copy`, and running `tilelive-copy` to generate vector tiles and store them into MBTiles database. Thus, you would need to have `tilelive-copy` installed and in your path together with all other packages required for reading Mapnik source and storing MBTiles.
 
-The scripts, including layer definitions, from OpenMapTiles repositories have been adjusted, if needed. All import is done in Linux, but similar approach could work on other platforms as well.
+The scripts, layer definitions, from OpenMapTiles repositories have been adjusted, as needed. All import is done in Linux, but similar approach could work on other platforms as well.
 
 The import is described on the basis of PostGIS data source. Similar approach should work with other data sources supported by Mapnik.
 
@@ -58,16 +79,14 @@ At the end of the import, `import_osm.sh` simplifies larger polygons in `osm_lan
 
 ## Vector tile generation
 
-Vector tiles layers are defined using YAML configuration files that are scriptable using Jinja2 allowing to change definitions on the basis of the used zoom level, as given by ZLEVEL variable in the configuration files.
-
-* Collect definition of layers into a single YAML under `build` sub-directory; generate Mapnik data source, layers definitions, and define destination of generated vector tiles (prefix for the created databases):
+To collect definition of layers into a single YAML under `build` sub-directory; to generate Mapnik data source, layers definitions, and to define destination of generated vector tiles (prefix for the created databases), run:
   ```
   ./prepare_vector_source.sh
   ```
 
 There are two ways to generate vector tiles: using bash script or GNU make. The bash script allows to specify the additional parameters that will be passed to `tilelive-copy` as arguments. For example, bounding box and zoom levels could be specified allowing to generate vector tiles for specified coordinates into a single MBTiles file. GNU Makefile approach would generate vector tiles covering the planet by splitting the task into small sub-tasks. As a result, one can run several imports in parallel (`-j` option for `make`), stop the import and continue later with some loss of imported data due to interrupted jobs. It is suggested to use bash script for testing and make in production cases.
 
-Its possible to limit the coverage of planet import by POLY files. For that, create a subfolder named `hierarchy`, as in https://github.com/rinigus/osmscout-server/tree/master/scripts/import/hierarchy and position POLY files under the subfolders of `hierarchy`. The vector tile source generation script `prepare_vector_source.sh` will read POLY files stored at `hierarchy` by walking through all subfolders and check each tile for intersection with at least one of the given polygons. To skip a polygon for some of the territories, add `ignore` file in the same subfolder. For example, one can just use hierarchy as provided in OSM Scout Server import scripts to exclude Antarctica and cover only the countries. 
+Its possible to limit the coverage of planet import by POLY files. For that, create a subfolder named `hierarchy`, as in https://github.com/rinigus/osmscout-server/tree/master/scripts/import/hierarchy and position POLY files under the subfolders of `hierarchy`. The vector tile source generation script `prepare_vector_source.sh` will read POLY files stored at `hierarchy` by walking through all subfolders and check each tile for intersection with at least one of the given polygons. To skip a polygon for some of the territories, add `ignore` file in the same subfolder. For example, one can just use hierarchy as provided in OSM Scout Server import scripts to exclude Antarctica and cover only the countries.
 
 The information regarding bash script path and make example are listed at the end of `./generate_vector_source.py` run (this script is executed as a part of `prepare_vector_source.sh`). While import using make is shown with the full command, for bash script only the path of the script is printed. An example usage for importing using the bash script:
 
