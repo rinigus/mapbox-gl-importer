@@ -59,6 +59,14 @@ UPDATE osm_landcover_processed_polygon_z6 SET geometry = ST_SimplifyPreserveTopo
 CREATE TABLE osm_landcover_processed_polygon_z5 AS (SELECT * FROM osm_landcover_processed_polygon WHERE area > ZAREA5);
 UPDATE osm_landcover_processed_polygon_z5 SET geometry = ST_SimplifyPreserveTopology(geometry, ZTOL5);
 
+-- used by polygon splitter
+ALTER TABLE osm_landcover_processed_polygon ADD COLUMN row_id SERIAL PRIMARY KEY;
+ALTER TABLE osm_landcover_processed_polygon_z13 ADD COLUMN row_id SERIAL PRIMARY KEY;
+ALTER TABLE osm_landcover_processed_polygon_z12 ADD COLUMN row_id SERIAL PRIMARY KEY;
+ALTER TABLE osm_landcover_processed_polygon_z11 ADD COLUMN row_id SERIAL PRIMARY KEY;
+ALTER TABLE osm_landcover_processed_polygon_z10 ADD COLUMN row_id SERIAL PRIMARY KEY;
+
+
 -- indexes
 CREATE INDEX IF NOT EXISTS osm_landcover_processed_polygon_geometry_idx ON osm_landcover_processed_polygon USING gist (geometry);
 

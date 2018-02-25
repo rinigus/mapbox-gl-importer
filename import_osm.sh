@@ -31,5 +31,15 @@ imposm3 import \
 
 parallel --lb --halt now,fail=1 'cat {} | psql --echo-queries -v ON_ERROR_STOP=1 --host="$POSTGRES_HOST" --port="$POSTGRES_PORT" --dbname="$POSTGRES_DB" --username="$POSTGRES_USER"' ::: build/layer*sql
 
+#################################
+# handle large polygons in osm_landcover_processed_polygon
+AREA="1e+10"
+for table in osm_landcover_processed_polygon_z12 osm_landcover_processed_polygon_z13 osm_landcover_processed_polygon ; do
+    echo Processing $table
+    python2.7 split-large-polygons/split_large_polygons.py -t $table -c geometry -i row_id -a $AREA -s 3857
+    echo "CLUSTER $table USING ${table}_geometry_idx;" | psql --echo-queries -v ON_ERROR_STOP=1 --host="$POSTGRES_HOST" --port="$POSTGRES_PORT" --dbname="$POSTGRES_DB" --username="$POSTGRES_USER"
+    echo
+done
+
 psql --echo-queries -v ON_ERROR_STOP=1 --host="$POSTGRES_HOST" --port="$POSTGRES_PORT" --dbname="$POSTGRES_DB" --username="$POSTGRES_USER" < "$LAST_UPDATE_SQL"
 
