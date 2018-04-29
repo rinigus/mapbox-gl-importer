@@ -74,3 +74,21 @@ The information regarding bash script path and make example are listed at the en
 ```
 bash build/layers/layers.xml-importer.sh --bounds="21,57,29,60" mbtiles://./tiles/world.mbtiles
 ```
+
+## Profiling import
+
+To be sure that the import goes well, its good to monitor it. For that, before import, reset statistics in PostGIS database after logging into it:
+
+```
+shell # psql --echo-queries -h `pwd`/pg-socket -p 35432 osm
+psql> select pg_stat_statements_reset();
+```
+
+(adjust psql command line parameters as appropriate). After that, check the stats
+
+```
+select calls, total_time, query from pg_stat_statements order by total_time desc limit 10
+```
+
+In normal operation, transportation layer should be using most of the postgres query time. When something is wrong, postgres starts using most of CPU, not node processes. In one of the  imports, looks like osm_landuse tables were not clustered that well. After performing new cluster statement for these tables + vacuum analyze, all started working quite fast.
+
