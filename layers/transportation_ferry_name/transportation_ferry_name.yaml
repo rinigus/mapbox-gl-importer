@@ -1,7 +1,7 @@
 layers:
   - id: ferry_name
     table: |
-      SELECT geometry, name, COALESCE(NULLIF(name_en, ''), name) AS name_en, waterway AS class FROM
+      SELECT geometry, name, COALESCE(NULLIF(name_en, ''), name) AS name_en, shipway AS class FROM
       {% if z <= 13 %}
       osm_shipway_linestring_gen1
       {% else %}
