@@ -235,6 +235,26 @@ ramp int, oneway int, brunnel TEXT, service TEXT) AS $$
         WHERE zoom_level >= 13
         UNION ALL
 
+        -- etldoc: osm_shipway_linestring_gen4  ->  layer_transportation:z9
+        SELECT
+            osm_id, geometry,
+            NULL AS highway, NULL AS railway, NULL AS aerialway, shipway,
+            service_value(service) AS service,
+            is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
+        FROM osm_shipway_linestring_gen4
+        WHERE zoom_level = 9
+        UNION ALL
+
+        -- etldoc: osm_shipway_linestring_gen3  ->  layer_transportation:z10
+        SELECT
+            osm_id, geometry,
+            NULL AS highway, NULL AS railway, NULL AS aerialway, shipway,
+            service_value(service) AS service,
+            is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, z_order
+        FROM osm_shipway_linestring_gen3
+        WHERE zoom_level = 10
+        UNION ALL
+
         -- etldoc: osm_shipway_linestring_gen2  ->  layer_transportation:z11
         SELECT
             osm_id, geometry,

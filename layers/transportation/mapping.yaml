@@ -30,6 +30,16 @@ generalized_tables:
     source: aerialway_linestring
     tolerance: ZRES13
 
+# etldoc: imposm3 -> osm_shipway_linestring_gen4
+  shipway_linestring_gen4:
+    source: shipway_linestring_gen3
+    tolerance: ZRES10
+
+# etldoc: imposm3 -> osm_shipway_linestring_gen3
+  shipway_linestring_gen3:
+    source: shipway_linestring_gen2
+    tolerance: ZRES11
+
 # etldoc: imposm3 -> osm_shipway_linestring_gen2
   shipway_linestring_gen2:
     source: shipway_linestring_gen1
