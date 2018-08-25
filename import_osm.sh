@@ -24,6 +24,11 @@ imposm3 import \
         -deployproduction \
         -write
 
+imposm3 import \
+        -connection "$PG_CONNECT" \
+        -mapping "$MAPPING_YAML" \
+        -removebackup
+
 #################################
 # update sql
 
