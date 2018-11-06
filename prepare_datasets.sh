@@ -20,4 +20,7 @@ unzip -oj $IMPORT_DATA_DIR/simplified-water-polygons-complete-3857.zip -d $IMPOR
 #wget -P $IMPORT_DATA_DIR https://github.com/lukasmartinelli/osm-lakelines/releases/download/v0.9/lake_centerline.geojson
 
 # borders
-wget -O $IMPORT_DIR/osmborder_lines.csv https://github.com/openmaptiles/import-osmborder/releases/download/v0.1/osmborder_lines.csv
+#wget -O $IMPORT_DIR/osmborder_lines.csv https://github.com/openmaptiles/import-osmborder/releases/download/v0.1/osmborder_lines.csv
+wget -O $IMPORT_DIR/osmborder_lines.csv.gz https://github.com/openmaptiles/import-osmborder/releases/download/v0.4/osmborder_lines.csv.gz
+rm $IMPORT_DIR/osmborder_lines.csv || true
+gunzip $IMPORT_DIR/osmborder_lines.csv.gz
