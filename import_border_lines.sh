@@ -56,43 +56,43 @@ function import_borders() {
     create_import_table "$table_name"
     import_csv "$csv_file" "$table_name"
 
-    local gen1_table_name="osm_border_linestring_gen1"
+    local gen1_table_name="osm_border_linestring_z13"
     drop_table "$gen1_table_name"
     generalize_border "$gen1_table_name" "$table_name" 10 10
 
-    local gen2_table_name="osm_border_linestring_gen2"
+    local gen2_table_name="osm_border_linestring_z12"
     drop_table "$gen2_table_name"
     generalize_border "$gen2_table_name" "$table_name" 20 10
 
-    local gen3_table_name="osm_border_linestring_gen3"
+    local gen3_table_name="osm_border_linestring_z11"
     drop_table "$gen3_table_name"
     generalize_border "$gen3_table_name" "$table_name" 40 8
 
-    local gen4_table_name="osm_border_linestring_gen4"
+    local gen4_table_name="osm_border_linestring_z10"
     drop_table "$gen4_table_name"
     generalize_border "$gen4_table_name" "$table_name" 80 6
 
-    local gen5_table_name="osm_border_linestring_gen5"
+    local gen5_table_name="osm_border_linestring_z9"
     drop_table "$gen5_table_name"
     generalize_border "$gen5_table_name" "$table_name" 160 6
 
-    local gen6_table_name="osm_border_linestring_gen6"
+    local gen6_table_name="osm_border_linestring_z8"
     drop_table "$gen6_table_name"
     generalize_border "$gen6_table_name" "$table_name" 300 4
 
-    local gen7_table_name="osm_border_linestring_gen7"
+    local gen7_table_name="osm_border_linestring_z7"
     drop_table "$gen7_table_name"
     generalize_border "$gen7_table_name" "$table_name" 600 4
 
-    local gen8_table_name="osm_border_linestring_gen8"
+    local gen8_table_name="osm_border_linestring_z6"
     drop_table "$gen8_table_name"
     generalize_border "$gen8_table_name" "$table_name" 1200 4
 
-    local gen9_table_name="osm_border_linestring_gen9"
+    local gen9_table_name="osm_border_linestring_z5"
     drop_table "$gen9_table_name"
     generalize_border "$gen9_table_name" "$table_name" 2400 4
 
-    local gen10_table_name="osm_border_linestring_gen10"
+    local gen10_table_name="osm_border_linestring_z4"
     drop_table "$gen10_table_name"
     generalize_border "$gen10_table_name" "$table_name" 4800 2
 }
