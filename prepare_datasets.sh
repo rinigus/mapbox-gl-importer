@@ -7,9 +7,10 @@ source $PROGPATH/env.sh
 mkdir -p $IMPORT_DATA_DIR
 
 # water
-wget -P $IMPORT_DATA_DIR http://data.openstreetmapdata.com/water-polygons-split-3857.zip
+rm $IMPORT_DATA_DIR/water-polygons-split-3857.zip $IMPORT_DATA_DIR/simplified-water-polygons-split-3857.zip || true
+wget -P $IMPORT_DATA_DIR https://osmdata.openstreetmap.de/download/water-polygons-split-3857.zip
 unzip -oj $IMPORT_DATA_DIR/water-polygons-split-3857.zip -d $IMPORT_DATA_DIR
-wget -P $IMPORT_DATA_DIR http://data.openstreetmapdata.com/simplified-water-polygons-complete-3857.zip
+wget -P $IMPORT_DATA_DIR https://osmdata.openstreetmap.de/download/simplified-water-polygons-split-3857.zip
 unzip -oj $IMPORT_DATA_DIR/simplified-water-polygons-complete-3857.zip -d $IMPORT_DATA_DIR
 
 # natural earth
