@@ -41,7 +41,7 @@ tables:
       - reservoir
       natural:
       - water
-      - bay
+      #- bay
       waterway:
       - river
       - riverbank
@@ -77,3 +77,6 @@ tables:
       place:
       - ocean
       - sea
+      natural:
+      - water
+      - bay
