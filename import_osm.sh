@@ -28,35 +28,13 @@ imposm3 import \
 
 echo "DROP SCHEMA backup CASCADE;" | psql --echo-queries -v ON_ERROR_STOP=1 --host="$POSTGRES_HOST" --port="$POSTGRES_PORT" --dbname="$POSTGRES_DB" --username="$POSTGRES_USER" || true
 
-# imposm3 import \
-#         -connection "$PG_CONNECT" \
-#         -mapping "$MAPPING_YAML" \
-#         -overwritecache \
-#         -cachedir "$IMPOSM_CACHE_DIR" \
-#         -read "$pbf_file" \
-#         -dbschema-import public \
-#         -write
-
-# imposm3 import \
-#         -connection "$PG_CONNECT" \
-#         -mapping "$MAPPING_YAML" \
-#         -overwritecache \
-#         -cachedir "$IMPOSM_CACHE_DIR" \
-#         -read "$pbf_file" \
-#         -deployproduction \
-#         -write
-
-# imposm3 import \
-#         -connection "$PG_CONNECT" \
-#         -mapping "$MAPPING_YAML" \
-#         -removebackup
-
 #################################
 # update sql
 
 #psql --echo-queries -v ON_ERROR_STOP=1 --host="$POSTGRES_HOST" --port="$POSTGRES_PORT" --dbname="$POSTGRES_DB" --username="$POSTGRES_USER" < "$UPDATE_SQL"
 
-parallel --lb --halt now,fail=1 'cat {} | psql --echo-queries -v ON_ERROR_STOP=1 --host="$POSTGRES_HOST" --port="$POSTGRES_PORT" --dbname="$POSTGRES_DB" --username="$POSTGRES_USER"' ::: build/layer*sql
+#parallel --lb --halt now,fail=1 'cat {} | psql --echo-queries -v ON_ERROR_STOP=1 --host="$POSTGRES_HOST" --port="$POSTGRES_PORT" --dbname="$POSTGRES_DB" --username="$POSTGRES_USER"' ::: build/layer*sql
+parallel --lb --halt now,fail=1 'cat {} | psql --echo-queries --host="$POSTGRES_HOST" --port="$POSTGRES_PORT" --dbname="$POSTGRES_DB" --username="$POSTGRES_USER"' ::: build/layer*sql
 
 #################################
 # handle large polygons in osm_landcover_processed_polygon
