@@ -14,4 +14,4 @@ wget https://raw.githubusercontent.com/mapbox/postgis-vt-util/v1.0.0/postgis-vt-
 
 mkdir -p $GOPATH
 go get github.com/omniscale/imposm3
-go install github.com/omniscale/imposm3/cmd/imposm3
+go install github.com/omniscale/imposm3/cmd/imposm

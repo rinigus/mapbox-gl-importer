@@ -60,6 +60,7 @@ if len(sys.argv) != 3:
 
 projectdir = sys.argv[1]
 builddir = sys.argv[2]
+mkdir_p(builddir)
 
 # load project
 layers = loadyaml(os.path.join(projectdir, "layers-list.yaml"))

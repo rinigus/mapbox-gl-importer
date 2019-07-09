@@ -17,14 +17,14 @@ mkdir -p "$IMPOSM_CACHE_DIR"
 
 echo "DROP SCHEMA backup CASCADE;" | psql --echo-queries -v ON_ERROR_STOP=1 --host="$POSTGRES_HOST" --port="$POSTGRES_PORT" --dbname="$POSTGRES_DB" --username="$POSTGRES_USER" || true
 
-imposm3 import \
-        -connection "$PG_CONNECT" \
-        -mapping "$MAPPING_YAML" \
-        -overwritecache \
-        -cachedir "$IMPOSM_CACHE_DIR" \
-        -read "$pbf_file" \
-        -deployproduction \
-        -write
+imposm import \
+       -connection "$PG_CONNECT" \
+       -mapping "$MAPPING_YAML" \
+       -overwritecache \
+       -cachedir "$IMPOSM_CACHE_DIR" \
+       -read "$pbf_file" \
+       -deployproduction \
+       -write
 
 echo "DROP SCHEMA backup CASCADE;" | psql --echo-queries -v ON_ERROR_STOP=1 --host="$POSTGRES_HOST" --port="$POSTGRES_PORT" --dbname="$POSTGRES_DB" --username="$POSTGRES_USER" || true
 
