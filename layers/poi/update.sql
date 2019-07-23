@@ -12,7 +12,7 @@ SELECT osm_id,
   name, name_en, aerialway, amenity, barrier, building,
 highway, historic, landuse, leisure, man_made, railway, religion, shop, sport, station,
 tourism, waterway FROM osm_poi_polygon
-WHERE NOT EXISTS (
+WHERE ST_IsValid(geometry) AND NOT EXISTS (
       SELECT 'X' FROM osm_poi_point WHERE osm_poi_polygon.osm_id=osm_poi_point.osm_id);
 
 

@@ -34,3 +34,4 @@ ele_ft = ele*3.2808399;
 
 CREATE INDEX IF NOT EXISTS osm_aerodrome_label_point_geom ON osm_aerodrome_label_point USING gist(geometry);
 CREATE INDEX IF NOT EXISTS osm_aerodrome_label_point_iata_idx ON osm_aerodrome_label_point USING gist(geometry) WHERE iata<>'';
+CLUSTER osm_aerodrome_label_point USING osm_aerodrome_label_point_geom;

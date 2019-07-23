@@ -19,7 +19,7 @@ CREATE TABLE osm_water_point AS (
   ELSE 18 END
   AS rank, area
   FROM osm_water_polygon
-  WHERE name<>'' AND area > 25000
+  WHERE name<>'' AND ST_IsValid(geometry) AND area > 25000
   UNION ALL
   SELECT osm_id, geometry, name,
   COALESCE(NULLIF(name_en, ''), name) AS name_en,
