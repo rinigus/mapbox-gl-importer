@@ -118,7 +118,7 @@ for Z in range(MAX_ZOOM + 1):
         keys = ll.keys()
         keys.sort()
         for par in keys:
-            if par in ["id", "srs", "zmin", "zmax", "buffer-size"]: continue
+            if par in ["id", "srs", "zmin", "zmax", "buffer-size", "fields"]: continue
             if ll["type"] != "sqlite" and par in ["use_spatial_index"]: continue
 
             p = etree.SubElement(ds, "Parameter", name=par)

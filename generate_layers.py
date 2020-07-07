@@ -1,6 +1,6 @@
 #!/usr/bin/env python2.7
 
-import sys, os, codecs, collections, errno
+import sys, os, codecs, collections, errno, json
 from yaml import load as yload
 from yaml import dump as ydump
 try:
@@ -43,10 +43,24 @@ builddir = sys.argv[2]
 layers = loadyaml(os.path.join(projectdir, "layers-list.yaml"))
 project = loadyaml(os.path.join(projectdir, "layers-header.yaml"))
 project["layers"] = []
+layers_desc = {}
 for l in layers:
     print "Layer:", l
     current = loadyaml(os.path.join(projectdir, l, l + ".yaml"))
     project["layers"].extend(current["layers"])
+
+    for L in current["layers"]:
+        if "id" not in L:
+            print "Layer is missing ID"
+            sys.exit(-2)
+        id = L["id"]
+        fields = {}
+        for k, v in L.get("fields", {}).iteritems():
+            fields[k] = v.title()
+        layers_desc[id] = dict(id = id, fields = fields)
+
+vector_layers = [v for v in layers_desc.values()]
+project["parameters"]["json"] = json.dumps(dict(vector_layers = vector_layers))
 
 mkdir_p(builddir)
 f = open(os.path.join(builddir, "layers.yaml"), mode="w")
