@@ -63,6 +63,7 @@ def_poi_mapping_amenity: &poi_mapping_amenity
 def_poi_mapping_barrier: &poi_mapping_barrier
   - border_control
 
+# buildings that we don't want to miss even without names
 def_poi_mapping_building: &poi_mapping_building
   - college
   - kindergarten
@@ -496,3 +497,28 @@ tables:
       sport: *poi_mapping_sport
       tourism: *poi_mapping_tourism
       waterway: *poi_mapping_waterway
+
+  poi_building:
+    type: geometry
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - name: name
+      key: name
+      type: string
+    - name: name_en
+      key: name:en
+      type: string
+    - name: building
+      key: building
+      type: string
+    type_mappings:
+      points:
+        building: [__any__]
+      polygons:
+        building: [__any__]
+    filters:
+      require:
+        name: [__any__]

@@ -5,7 +5,7 @@ INSERT INTO osm_poi_point
 (osm_id, geometry, name, name_en, aerialway, amenity, barrier, building,
 highway, historic, landuse, leisure, man_made, railway, religion, shop, sport, station,
 tourism, waterway)
-SELECT osm_id, 
+SELECT osm_id,
   CASE WHEN ST_NPoints(ST_ConvexHull(geometry))=ST_NPoints(geometry) THEN ST_Centroid(geometry)
   ELSE ST_PointOnSurface(geometry)
   END AS geometry,
@@ -15,6 +15,17 @@ tourism, waterway FROM osm_poi_polygon
 WHERE ST_IsValid(geometry) AND NOT EXISTS (
       SELECT 'X' FROM osm_poi_point WHERE osm_poi_polygon.osm_id=osm_poi_point.osm_id);
 
+-- Load buildings that were collected separately
+UPDATE osm_poi_building
+SET geometry = ST_Centroid(geometry)
+WHERE ST_GeometryType(geometry) <> 'ST_Point';
+
+INSERT INTO osm_poi_point
+(osm_id, geometry, class, name, name_en, building)
+SELECT osm_id, geometry, "building" AS class, name, name_en, building
+FROM osm_poi_building
+WHERE NOT EXISTS (
+      SELECT 'X' FROM osm_poi_point WHERE osm_poi_building.osm_id=osm_poi_point.osm_id);
 
 -- determine class, symbol, and zlevel
 UPDATE osm_poi_point SET
@@ -30,7 +41,7 @@ WHEN amenity IN ('charging_station', 'fuel', 'parking') THEN 'car'
 WHEN amenity IN ('college', 'kindergarten', 'school', 'university') OR
                   building IN ('college', 'kindergarten', 'school', 'university')
                   THEN 'school'
-WHEN amenity IN ('bank', 'community_centre', 'courthouse', 'embassy', 'fire_station', 'grave_yard', 'library', 'place_of_worship', 
+WHEN amenity IN ('bank', 'community_centre', 'courthouse', 'embassy', 'fire_station', 'grave_yard', 'library', 'place_of_worship',
                  'post_office', 'ranger_station', 'recycling', 'shelter', 'telephone', 'toilets', 'townhall') OR
                  historic IN ('castle', 'monument') OR
                  landuse IN ('basin', 'cemetery', 'reservoir') OR
@@ -48,6 +59,7 @@ WHEN amenity IN ('swimming_pool') OR leisure IN ('golf_course', 'ice_rink', 'min
                  THEN 'sport'
 WHEN tourism IN ('alpine_hut', 'bed_and_breakfast', 'camp_site', 'caravan_site', 'chalet',
                   'guest_house', 'hostel', 'hotel', 'motel') THEN 'lodging'
+WHEN "class" IS NOT NULL THEN "class"
 ELSE NULL END,
 
 symbol = CASE
@@ -85,7 +97,7 @@ WHEN shop IN ('books') THEN 'library'
 WHEN shop IN ('doityourself', 'hardware') THEN 'shop_diy'
 WHEN shop IN ('fishmonger') THEN 'shop_seafood'
 WHEN shop IN ('ice_cream') THEN 'ice_cream'
-WHEN shop IN ('art', 'bag', 'bakery', 'clothes', 'coffee', 'convenience', 'deli', 'department_store', 
+WHEN shop IN ('art', 'bag', 'bakery', 'clothes', 'coffee', 'convenience', 'deli', 'department_store',
               'florist', 'garden_centre', 'gift', 'hairdresser', 'laundry', 'music', 'pet', 'seafood',
               'toys', 'sports') THEN 'shop_' || shop
 WHEN sport IN ('cycling') THEN 'bicycle'
@@ -107,7 +119,7 @@ WHEN amenity IN ('nursing_home') OR landuse IN ('basin', 'reservoir', 'sports_ce
 ELSE 'dot' END;
 
 -- Delete rows that don't have special symbol nor name
-DELETE FROM osm_poi_point WHERE "class" IS NULL OR (symbol='dot' AND ((name <> '') IS NOT TRUE));
+DELETE FROM osm_poi_point WHERE "class" IS NULL AND (symbol='dot' AND ((name <> '') IS NOT TRUE));
 
 -- Set rank
 UPDATE osm_poi_point SET
