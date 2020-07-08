@@ -14,6 +14,14 @@ layers:
       AND iata<>''
       {% endif %}
     zmin: 6
+    fields:
+      name: string
+      name_en: string
+      class: string
+      iata: string
+      icao: string
+      ele: number
+      ele_ft: number
 
 schema:
   - update.sql
