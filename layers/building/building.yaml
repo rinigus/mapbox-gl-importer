@@ -1,15 +1,10 @@
 layers:
   - id: building
     table: |
-      SELECT geometry, NULL::int AS render_height, NULL::int AS render_min_height FROM
-      {% if z <= 13 %}
-      osm_all_buildings_zZLEVEL
-      {% else %}
+      SELECT geometry FROM
       osm_all_buildings
-      {% endif %}
       WHERE geometry && !bbox!
-      ORDER BY ST_YMin(geometry) DESC
-    zmin: 13
+    zmin: 14
 
 schema:
   - update.sql

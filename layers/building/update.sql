@@ -67,13 +67,6 @@ CREATE TABLE osm_all_buildings AS (
          osm_building_polygon WHERE osm_id >= 0 AND area > 1
 );
 
-DROP TABLE IF EXISTS osm_all_buildings_z13 CASCADE;
-
-CREATE TABLE osm_all_buildings_z13 AS (SELECT * FROM osm_all_buildings);
-UPDATE osm_all_buildings_z13 SET geometry = ST_SimplifyPreserveTopology(geometry, ZTOL13);
-
 CREATE INDEX IF NOT EXISTS osm_all_buildings_geometry_idx ON osm_all_buildings USING gist (geometry);
-CREATE INDEX IF NOT EXISTS osm_all_buildings_z13_geometry_idx ON osm_all_buildings_z13 USING gist (geometry);
 
 CLUSTER osm_all_buildings USING osm_all_buildings_geometry_idx;
-CLUSTER osm_all_buildings_z13 USING osm_all_buildings_z13_geometry_idx;
