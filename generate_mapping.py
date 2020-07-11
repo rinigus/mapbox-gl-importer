@@ -34,7 +34,7 @@ def loadyaml(fname):
     #return yload(codecs.open(fname, mode="r", encoding="utf-8"), Loader=Loader)
 
 def ztol(z):
-    return 40075016.6855785/((256)*2**z)
+    return 0.25*40075016.6855785/((256)*2**z)
 
 def zarea(z):
     zt = ztol(max(0,z-2))
