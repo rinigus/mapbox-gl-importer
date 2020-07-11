@@ -22,7 +22,7 @@ WHERE ST_GeometryType(geometry) <> 'ST_Point';
 
 INSERT INTO osm_poi_point
 (osm_id, geometry, class, name, name_en, building)
-SELECT osm_id, geometry, "building" AS class, name, name_en, building
+SELECT osm_id, geometry, 'building' AS class, name, name_en, building
 FROM osm_poi_building
 WHERE NOT EXISTS (
       SELECT 'X' FROM osm_poi_point WHERE osm_poi_building.osm_id=osm_poi_point.osm_id);
@@ -119,15 +119,23 @@ WHEN amenity IN ('nursing_home') OR landuse IN ('basin', 'reservoir', 'sports_ce
 ELSE 'dot' END;
 
 -- Delete rows that don't have special symbol nor name
-DELETE FROM osm_poi_point WHERE "class" IS NULL AND (symbol='dot' AND ((name <> '') IS NOT TRUE));
+DELETE FROM osm_poi_point WHERE "class" IS NULL OR (symbol='dot' AND ((name <> '') IS NOT TRUE));
 
 -- Set rank
 UPDATE osm_poi_point SET
 rank = CASE
 WHEN symbol IN ('hospital') THEN 13
-WHEN symbol IN ('townhall', 'fire_station') THEN 14
+WHEN symbol IN ('townhall', 'fire_station', 'embassy') OR "class" IN ('health') THEN 14
 WHEN symbol IN ('college', 'police', 'bank') OR amenity IN ('taxi') OR barrier IN ('border_control') THEN 15
+WHEN "class" IN ('school') THEN 30
+WHEN "class" IN ('building') THEN 30
+WHEN "class" IN ('public', 'restaurant', 'lodging') AND "name" != '' THEN 40
+WHEN "name" = '' THEN 200
 ELSE 99 END;
+
+-- Set random number used to mix results while generating tiles
+UPDATE osm_poi_point SET
+rand = floor(random()*100000 + 1)::int;
 
 -- Update geometry
 -- UPDATE osm_poi_point

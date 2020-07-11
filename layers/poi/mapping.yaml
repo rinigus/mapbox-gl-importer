@@ -413,6 +413,8 @@ tables:
       type: integer
     - name: rank
       type: integer
+    - name: rand
+      type: integer
     - name: name
       key: name
       type: string
