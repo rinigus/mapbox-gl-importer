@@ -22,7 +22,7 @@ For npm installation, you may have to add `libssl1.0-dev` to the packages above.
 
 In addition, the following packages have to be installed for tile generation in this directory:
 ```
-npm install @mapbox/mbtiles @mapbox/tilelive @mapbox/tilelive-bridge mapnik 
+npm install @mapbox/mbtiles @mapbox/tilelive @mapbox/tilelive-bridge
 ```
 
 You may want to add corresponding PostgreSQL path into `PATH`, if its tools (createdb and oters) are not in the path already. For example, `/usr/lib/postgresql/10/bin`.
