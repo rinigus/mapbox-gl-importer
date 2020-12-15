@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 
 MAX_ZOOM = 14
 
@@ -57,9 +57,9 @@ def target_names(store, fname = None):
 ##################################################################################################
 
 if len(sys.argv) != 3:
-    print "Usage: " + sys.argv[0] + " <path for layers.yml> <filebasename for tiles>"
-    print "Output would be to the layers definition files, import shell script and makefile."
-    print "Here, <filebasename for tiles> should be full path for MBTILES file basename. This is used in Makefile-based tile generation only."
+    print("Usage: " + sys.argv[0] + " <path for layers.yml> <filebasename for tiles>")
+    print("Output would be to the layers definition files, import shell script and makefile.")
+    print("Here, <filebasename for tiles> should be full path for MBTILES file basename. This is used in Makefile-based tile generation only.")
     sys.exit(-1)
 
 finname = sys.argv[1]
@@ -72,8 +72,8 @@ fmetadir = os.path.abspath(os.path.join(ftiledir, "meta"))
 mkdir_p(foutdir)
 mkdir_p(fmetadir)
 
-print "Reading:", finname
-print "Writing:", foutname
+print("Reading:", finname)
+print("Writing:", foutname)
 
 definitions = yload(codecs.open(finname, mode="r", encoding="utf-8"), Loader=Loader)
 
@@ -85,18 +85,18 @@ xml = {}
 # zoom levels [0..14]
 for Z in range(MAX_ZOOM + 1):
 
-    print "Z: %2d" % Z, " - ",
+    print("Z: %2d" % Z, " - ",end=' ')
 
     head = etree.Element('Map',
                          srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over")
 
     # parameters
     par = etree.SubElement(head, "Parameters")
-    keys = parameters.keys()
+    keys = list(parameters.keys())
     keys.sort()
     for p in keys:
         el = etree.SubElement(par, "Parameter", name=p)
-        el.text = unicode(parameters[p])
+        el.text = str(parameters[p])
 
     # layers
     for layer in layers:
@@ -107,7 +107,7 @@ for Z in range(MAX_ZOOM + 1):
         if Z < zmin or Z > zmax: continue
         bsize = str(layer.get("buffer-size", defaults["buffer-size"]))
 
-        print name,
+        print(name, end=' ')
         l = etree.SubElement(head, "Layer", name=name, srs=srs)
         l.attrib["buffer-size"] = bsize
         ds = etree.SubElement(l, "Datasource")
@@ -115,14 +115,14 @@ for Z in range(MAX_ZOOM + 1):
         ll = copy.copy(defaults)
         for k in layer: ll[k] = layer[k]
 
-        keys = ll.keys()
+        keys = list(ll.keys())
         keys.sort()
         for par in keys:
             if par in ["id", "srs", "zmin", "zmax", "buffer-size", "fields"]: continue
             if ll["type"] != "sqlite" and par in ["use_spatial_index"]: continue
 
             p = etree.SubElement(ds, "Parameter", name=par)
-            if ll[par] is not None: txt = unicode(ll[par])
+            if ll[par] is not None: txt = str(ll[par])
             else: txt = ""
             if par == "table": txt = "(" + txt + ") AS data"
             template = Template(txt)
@@ -130,10 +130,10 @@ for Z in range(MAX_ZOOM + 1):
 
     xml[Z] = """<?xml version='1.0' encoding='utf-8'?>
     <!DOCTYPE Map>
-    """ + etree.tostring(head, pretty_print=True).replace("ZLEVEL", str(Z))
-    print
+    """ + etree.tostring(head, pretty_print=True).decode("utf-8").replace("ZLEVEL", str(Z))
+    print()
 
-kk = xml.keys()
+kk = list(xml.keys())
 kk.sort()
 xml_range = {}
 for Z1 in kk:
@@ -149,7 +149,7 @@ for Z1 in kk:
     xml_range[Z1] = [Z1,Z2]
 
 # write xml files
-kk = xml.keys()
+kk = list(xml.keys())
 kk.sort()
 for z in kk:
     Z = xml_range[z]
@@ -169,7 +169,7 @@ for z in kk:
 fimportername = foutname + "-importer.sh"
 fout = open( fimportername, "w" )
 fout.write(cmds)
-print "Importer script at", fimportername
+print("Importer script at", fimportername)
 
 # generate makefile
 cmds_world = []
@@ -208,7 +208,7 @@ if os.path.exists('hierarchy'):
             areas.append(parse_poly(os.path.join(root, "poly")))
 
 if areas is not None:
-    print "Checking sections against %d areas" % len(areas)
+    print("Checking sections against %d areas" % len(areas))
 
 # section layers
 z = WORLD_ZOOM+1
@@ -240,7 +240,7 @@ fmake.write("generate_all: ")
 for t in targets: fmake.write(t + " ")
 fmake.write("\n\n")
 
-print "Import using make: make -f %s" % fmakename
+print("Import using make: make -f %s" % fmakename)
 
 # progress monitor, based on https://github.com/fearside/ProgressBar/
 fprogressname = foutname + "-progress.sh"
@@ -267,7 +267,7 @@ done
 """ % (donedir, len(targets))
 )
 
-print "Monitor import progress run by make using the following command: bash %s" % fprogressname
+print("Monitor import progress run by make using the following command: bash %s" % fprogressname)
 
 # f = open("rmhelper.sh", "w")
 # f.write(rmsc)

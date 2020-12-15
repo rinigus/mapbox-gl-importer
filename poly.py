@@ -31,7 +31,7 @@ def parse_poly(fname):
 
         elif in_ring:
             # we are in a ring and picking up new coordinates.
-            ring.append(map(float, line.split()))
+            ring.append(list(map(float, line.split())))
 
         elif not in_ring and line.strip() == 'END':
             # we are at the end of the whole polygon.
@@ -62,4 +62,4 @@ def intersects(areas, coors):
 if __name__ == '__main__':
     area = [parse_poly("hierarchy/europe/estonia/poly")]
     i = intersects(area, [25, 57, 26, 60])
-    print "intersects: ", i
+    print("intersects: ", i)

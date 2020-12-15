@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 
 import sys, os, codecs, collections, errno, json
 from yaml import load as yload
@@ -32,8 +32,8 @@ def mkdir_p(path):
 ###############################################################################
 
 if len(sys.argv) != 3:
-    print "Usage: " + sys.argv[0] + " <path for layers project directory> <build directory>"
-    print "Generates layers definition file used by vector source generator"
+    print("Usage: " + sys.argv[0] + " <path for layers project directory> <build directory>")
+    print("Generates layers definition file used by vector source generator")
     sys.exit(-1)
 
 projectdir = sys.argv[1]
@@ -45,17 +45,17 @@ project = loadyaml(os.path.join(projectdir, "layers-header.yaml"))
 project["layers"] = []
 layers_desc = {}
 for l in layers:
-    print "Layer:", l
+    print("Layer:", l)
     current = loadyaml(os.path.join(projectdir, l, l + ".yaml"))
     project["layers"].extend(current["layers"])
 
     for L in current["layers"]:
         if "id" not in L:
-            print "Layer is missing ID"
+            print("Layer is missing ID")
             sys.exit(-2)
         id = L["id"]
         fields = {}
-        for k, v in L.get("fields", {}).iteritems():
+        for k, v in L.get("fields", {}).items():
             fields[k] = v.title()
         layers_desc[id] = dict(id = id, fields = fields)
 

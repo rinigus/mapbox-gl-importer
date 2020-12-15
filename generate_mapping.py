@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 
 import sys, os, codecs, collections, errno
 from yaml import load as yload
@@ -22,7 +22,7 @@ def loadyaml(fname):
     try:
         txt = codecs.open(fname, mode="r", encoding="utf-8").read()
     except:
-        print "Cannot open:", fname
+        print("Cannot open:", fname)
         return []
     for z in reversed(range(MAX_POSSIBLE_ZLEVEL)):
         txt = txt.replace("ZAREA%d" % z, str(zarea(z)))
@@ -54,8 +54,8 @@ def mkdir_p(path):
 ###############################################################################
 
 if len(sys.argv) != 3:
-    print "Usage: " + sys.argv[0] + " <path for layers project directory> <build directory>"
-    print "Generates imposm3 mapping definition file and update.sql"
+    print("Usage: " + sys.argv[0] + " <path for layers project directory> <build directory>")
+    print("Generates imposm3 mapping definition file and update.sql")
     sys.exit(-1)
 
 projectdir = sys.argv[1]
@@ -67,7 +67,7 @@ layers = loadyaml(os.path.join(projectdir, "layers-list.yaml"))
 project = collections.defaultdict(dict)
 
 for l in layers:
-    print "Layer:", l
+    print("Layer:", l)
     current = loadyaml(os.path.join(projectdir, l, "mapping.yaml"))
     schema = loadyaml(os.path.join(projectdir, l, l + ".yaml")).get("schema", [])
     for k in current:
