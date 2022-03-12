@@ -67,7 +67,7 @@ In addition to Planet OSM, there are several other datasets used in generation o
 
 Importing Planet.PBF goes through [imposm3](https://github.com/omniscale/imposm3) and requires definition of the layers. These layers are defined together with vector tile layers under `layers` sub-directory. During the import, the script generates imposm3 layers mapping and SQL script that is run after the import to prepare the data for vector tile generation. 
 
-At the end of the import, `import_osm.sh` simplifies larger polygons in `osm_landcover_processed_polygon` table and its lower zoom variants. Simplification uses simplification script from https://github.com/rory/split-large-polygons . Current `import_osm.sh` script assumes that this project is cloned in this directory and `split-large-polygons/split_large_polygons.py` adjusted to load correct database (fill variable `connect_args` accordingly). Such simplification is expected to significantly increase the speed of import in such areas as Greenland.
+At the end of the import, `import_osm.sh` simplifies larger polygons in `osm_landcover_processed_polygon` table and its lower zoom variants. Simplification uses a script from https://github.com/rory/split-large-polygons . Corresponding script is a part of this repository and you should adjust `split-large-polygons/split_large_polygons.py` to load correct database (fill variable `connect_args` accordingly). Such simplification is expected to significantly increase the speed of import in such areas as Greenland.
 
 * Make a link to the planet.pbf: `ln -s ../planet/planet-latest.osm.pbf .`
 
